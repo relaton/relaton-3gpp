@@ -1,0 +1,13 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+# rspec failure tracking
+.rubocop-https---raw-githubusercontent-com-riboseinc-oss-guides-master-ci-rubocop-yml
+Gemfile.lock
+.vscode/
