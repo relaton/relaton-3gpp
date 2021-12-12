@@ -44,7 +44,9 @@ module Relaton3gpp
 
       Zip::File.open(file) do |zip_file|
         enntry = zip_file.glob("status_smg_3GPP.mdb").first
-        File.write "status_smg_3GPP.mdb", enntry.get_input_stream.read
+        File.open("status_smg_3GPP.mdb", "wb") do |f|
+          f.write enntry.get_input_stream.read
+        end
       end
       dbs = Mdb.open "status_smg_3GPP.mdb"
       specs = dbs["Specs_GSM+3G"]
@@ -53,6 +55,7 @@ module Relaton3gpp
       dbs["2001-04-25_schedule"].each do |row|
         fetch_doc row, specs, specrels, releases
       end
+      File.write CURRENT, @current.to_yaml, encoding: "UTF-8"
     end
 
     #
@@ -61,20 +64,19 @@ module Relaton3gpp
     # @return [String] file name
     #
     def get_file # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      current = YAML.load_file CURRENT if File.exist? CURRENT
-      current ||= {}
+      @current = YAML.load_file CURRENT if File.exist? CURRENT
+      @current ||= {}
       ftp = Net::FTP.new("www.3gpp.org")
       ftp.resume = true
       ftp.login
       ftp.chdir "/Information/Databases/Spec_Status/"
       d, t, _, file = ftp.list("*.zip").first.split
       dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
-      return if file == current["file"] && dt == DateTime.parse(current["date"])
+      return if file == @current["file"] && dt == DateTime.parse(@current["date"])
 
       ftp.getbinaryfile file
-      current["file"] = file
-      current["date"] = dt.to_s
-      File.write CURRENT, current.to_yaml, encoding: "UTF-8"
+      @current["file"] = file
+      @current["date"] = dt.to_s
       file
     end
 

@@ -46,5 +46,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "mdb", "~> 0.5.0"
   spec.add_dependency "relaton-bib", "~> 1.9.0"
-  spec.add_dependency "rubyzip", "2.3.0"
+  spec.add_dependency "rubyzip", "~> 2.3.0"
 end

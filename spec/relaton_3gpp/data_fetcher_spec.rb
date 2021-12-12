@@ -69,7 +69,9 @@ RSpec.describe Relaton3gpp::DataFetcher do
         entries = double("entries", first: entry)
         expect(zip).to receive(:glob).with("status_smg_3GPP.mdb").and_return(entries)
         expect(Zip::File).to receive(:open).with("file.zip").and_yield(zip)
-        expect(File).to receive(:write).with("status_smg_3GPP.mdb", "data")
+        file = double("file")
+        expect(file).to receive(:write).with("data")
+        expect(File).to receive(:open).with("status_smg_3GPP.mdb", "wb").and_yield(file)
         dbs = {
           "2001-04-25_schedule" => [spec: "00.00"],
           "Specs_GSM+3G" => :specs,

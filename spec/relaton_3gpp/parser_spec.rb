@@ -28,7 +28,7 @@ RSpec.describe Relaton3gpp::Parser do
       row = {
         spec: "00.00", release: "R00", location: "get it#http://example.com#",
         MAJOR_VERSION_NB: "1", TECHNICAL_VERSION_NB: "2", EDITORIAL_VERSION_NB: "3",
-        completed: "2005-03-22 10:24:10", comment: "Comment"
+        completed: "2005-03-22 10:24:10", comment: "Comment", "3guId": "18507"
       }
       specs = [{
         Number: "00.00", Title: "Title", description: "Abstract",

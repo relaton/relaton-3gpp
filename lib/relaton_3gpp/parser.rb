@@ -39,7 +39,7 @@ module Relaton3gpp
     # @return [Relaton3gpp:BibliographicItem, nil] bibliographic item
     #
     def parse # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      return unless @spec
+      return unless @spec && @row[:"3guId"]
 
       Relaton3gpp::BibliographicItem.new(
         type: "standard",
@@ -172,7 +172,7 @@ module Relaton3gpp
     #
     def parse_note
       n = []
-      if @specrel[:remarks]
+      if @specrel && @specrel[:remarks]
         n << RelatonBib::BiblioNote.new(type: "remark", content: @specrel[:remarks])
       end
       if @row[:comment]
@@ -184,10 +184,10 @@ module Relaton3gpp
     #
     # Prase status
     #
-    # @return [RelatnoBib::DocumentStatus] status
+    # @return [RelatnoBib::DocumentStatus, nil] status
     #
     def parse_status
-      if @specrel[:withdrawn] == "1"
+      if @specrel && @specrel[:withdrawn] == "1"
         RelatonBib::DocumentStatus.new stage: "withdrawn"
       elsif @spec[:"For publication"] == "1"
         RelatonBib::DocumentStatus.new stage: "published"
@@ -208,8 +208,10 @@ module Relaton3gpp
     end
 
     def parse_release # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      project_start = Date.parse(@rel[:"rel-proj-start"]).to_s if @rel[:"rel-proj-start"]
-      project_end = Date.parse(@rel[:"rel-proj-end"]).to_s if @rel[:"rel-proj-end"]
+      if @rel
+        project_start = Date.parse(@rel[:"rel-proj-start"]).to_s if @rel[:"rel-proj-start"]
+        project_end = Date.parse(@rel[:"rel-proj-end"]).to_s if @rel[:"rel-proj-end"]
+      end
       Release.new(
         version2g: @rel[:version_2g],
         version3g: @rel[:version_3g],
