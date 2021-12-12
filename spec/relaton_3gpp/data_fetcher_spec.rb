@@ -24,17 +24,17 @@ RSpec.describe Relaton3gpp::DataFetcher do
       context "get file" do
         let(:ftp) do
           f = double("ftp")
-          expect(f).to receive(:resume=).with(true)
-          expect(f).to receive(:login)
-          expect(f).to receive(:chdir).with("/Information/Databases/Spec_Status/")
+          expect(f).to receive(:resume=).with(true).at_least(:once)
+          expect(f).to receive(:login).at_least(:once)
+          expect(f).to receive(:chdir).with("/Information/Databases/Spec_Status/").at_least(:once)
           expect(f).to receive(:list).with("*.zip").and_return(
             ["11-22-21  02:39PM            459946195 file.zip"],
-          )
+          ).at_least(:once)
           f
         end
 
         before do
-          expect(Net::FTP).to receive(:new).and_return ftp
+          expect(Net::FTP).to receive(:new).and_return(ftp).at_least(:once)
         end
 
         it "skip if no updates" do
@@ -58,6 +58,13 @@ RSpec.describe Relaton3gpp::DataFetcher do
           )
           expect(ftp).to receive(:getbinaryfile).with("file.zip")
           expect(subject.get_file).to eq "file.zip"
+        end
+
+        it "retry file downloading from FTP" do
+          expect(ftp).to receive(:getbinaryfile).with("file.zip").and_raise(Net::ReadTimeout).exactly(5).times
+          expect do
+            subject.get_file
+          end.to raise_error(Net::ReadTimeout)
         end
       end
 
