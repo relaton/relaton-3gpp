@@ -39,7 +39,7 @@ module Relaton3gpp
       builder.release do
         builder.version2G @version2g if @version2g
         builder.version3G @version3g if @version3g
-        builder.defunct @defunct if @defunct
+        builder.defunct @defunct unless @defunct.nil?
         builder.send "wpm-code-2G", @wpm_code_2g if @wpm_code_2g
         builder.send "wpm-code-3G", @wpm_code_3g if @wpm_code_3g
         builder.send "freeze-meeting", @freeze_meeting if @freeze_meeting

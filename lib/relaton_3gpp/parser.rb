@@ -207,25 +207,30 @@ module Relaton3gpp
       end
     end
 
+    #
+    # Parse release
+    #
+    # @return [Relaton3gpp::Release, nil] release
+    #
     def parse_release # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       if @rel
         project_start = Date.parse(@rel[:"rel-proj-start"]).to_s if @rel[:"rel-proj-start"]
         project_end = Date.parse(@rel[:"rel-proj-end"]).to_s if @rel[:"rel-proj-end"]
+        Release.new(
+          version2g: @rel[:version_2g],
+          version3g: @rel[:version_3g],
+          defunct: @rel[:defunct] == "1",
+          wpm_code_2g: @rel[:wpm_code_2g],
+          wpm_code_3g: @rel[:wpm_code_3g],
+          freeze_meeting: @rel[:"freeze meeting"],
+          freeze_stage1_meeting: @rel[:Stage1_freeze],
+          freeze_stage2_meeting: @rel[:Stage2_freeze],
+          freeze_stage3_meeting: @rel[:Stage3_freeze],
+          close_meeting: @rel[:Closed],
+          project_start: project_start,
+          project_end: project_end,
+        )
       end
-      Release.new(
-        version2g: @rel[:version_2g],
-        version3g: @rel[:version_3g],
-        defunct: @rel[:defunct] == "1",
-        wpm_code_2g: @rel[:wpm_code_2g],
-        wpm_code_3g: @rel[:wpm_code_3g],
-        freeze_meeting: @rel[:"freeze meeting"],
-        freeze_stage1_meeting: @rel[:Stage1_freeze],
-        freeze_stage2_meeting: @rel[:Stage2_freeze],
-        freeze_stage3_meeting: @rel[:Stage3_freeze],
-        close_meeting: @rel[:Closed],
-        project_start: project_start,
-        project_end: project_end,
-      )
     end
 
     #
