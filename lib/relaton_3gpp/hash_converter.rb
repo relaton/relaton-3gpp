@@ -8,7 +8,7 @@ module Relaton3gpp
       end
 
       def release_hash_to_bib(hash)
-        Release.new(**hash[:release]) if hash[:release]
+        hash[:release] &&= Release.new(**hash[:release])
       end
 
       # @param item_hash [Hash]

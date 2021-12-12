@@ -53,6 +53,11 @@ module Relaton3gpp
       end
     end
 
+    def has_ext_attrs? # rubocop:disable Metrics/CyclomaticComplexity
+      doctype || subdoctype || editorialgroup || ics.any? || @radiotechnology ||
+        @common_ims_spec || @release
+    end
+
     #
     # Convert to hash.
     #

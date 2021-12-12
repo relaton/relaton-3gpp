@@ -1,0 +1,31 @@
+<bibdata type="standard">
+  <fetched>2021-12-09</fetched>
+  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+  <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
+  <docidentifier type="3GPP">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
+  <docidentifier type="rapporteurId">2261</docidentifier>
+  <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
+  <language>en</language>
+  <script>Latn</script>
+  <status>
+    <stage>withdrawn</stage>
+  </status>
+  <ext>
+    <doctype>TR</doctype>
+    <editorialgroup>
+      <technical-committee type="prime">SMG5</technical-committee>
+    </editorialgroup>
+    <radiotechnology>3G</radiotechnology>
+    <release>
+      <version2G>3</version2G>
+      <version3G>3</version3G>
+      <defunct>true</defunct>
+      <freeze-meeting>SMG-28</freeze-meeting>
+      <freeze-stage1-meeting>SMG-28</freeze-stage1-meeting>
+      <freeze-stage2-meeting>SMG-28</freeze-stage2-meeting>
+      <freeze-stage3-meeting>SMG-28</freeze-stage3-meeting>
+      <close-meeting>SP-28</close-meeting>
+      <project-end>1999-02-12</project-end>
+    </release>
+  </ext>
+</bibdata>

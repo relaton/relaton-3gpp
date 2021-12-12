@@ -4,15 +4,18 @@ module Relaton3gpp
     # Document parser initalization
     #
     # @param [Hash] row row
+    # @param [Array<Hash>] specrels Spec + Release table
+    # @param [Array<Hash>] relaeases Releases table
+    # @param [Array<Hash>] specs Specs table
     #
-    def initialize(row, dbs) # rubocop:disable Metrics/AbcSize
+    def initialize(row, specs, specrels, releases) # rubocop:disable Metrics/AbcSize
       @row = row
-      @spec = dbs["Specs_GSM+3G"].detect { |s| s[:Number] == row[:spec] }
+      @spec = specs.detect { |s| s[:Number] == row[:spec] }
       if @spec
-        @specrel = dbs["Specs_GSM+3G_release-info"].detect do |sr|
+        @specrel = specrels.detect do |sr|
           sr[:Spec] == row[:spec] && sr[:Release] == row[:release]
         end
-        @rel = dbs["Releases"].detect { |r| r[:Release_code] == row[:release] }
+        @rel = releases.detect { |r| r[:Release_code] == row[:release] }
       end
     end
 
@@ -20,11 +23,14 @@ module Relaton3gpp
     # Initialize document parser and run it
     #
     # @param [Hash] row row
+    # @param [Array<Hash>] specrels Spec + Release table
+    # @param [Array<Hash>] relaeases Releases table
+    # @param [Array<Hash>] specs Specs table
     #
     # @return [RelatonBib:BibliographicItem, nil] bibliographic item
     #
-    def self.parse(row, dbs)
-      new(row, dbs).parse
+    def self.parse(row, specs, specrels, relaeases)
+      new(row, specs, specrels, relaeases).parse
     end
 
     #
@@ -44,7 +50,7 @@ module Relaton3gpp
         link: parse_link,
         abstract: parse_abstract,
         docid: parse_docid,
-        docnumber: @spec[:Number],
+        docnumber: number,
         date: parse_date,
         doctype: @spec[:Type],
         editorialgroup: parse_editorialgroup,
@@ -74,6 +80,8 @@ module Relaton3gpp
     # @return [Array<RelatonBib::TypedUri>] link
     #
     def parse_link
+      return [] unless @row[:location]
+
       content = @row[:location].split("#").last
       [RelatonBib::TypedUri.new(type: "src", content: content)]
     end
@@ -96,19 +104,19 @@ module Relaton3gpp
     #
     def parse_docid
       [
-        RelatonBib::DocumentIdentifier.new(type: "3GPP", id: pub_id),
+        RelatonBib::DocumentIdentifier.new(type: "3GPP", id: "3GPP #{number}"),
         RelatonBib::DocumentIdentifier.new(type: "rapporteurId",
                                            id: @spec[:"rapporteur id"]),
       ]
     end
 
     #
-    # Generate PubID
+    # Generate number
     #
-    # @return [String] PubID
+    # @return [String] number
     #
-    def pub_id
-      "3GPP #{@spec[:Type]} #{@row[:spec]}:#{@row[:release]}/#{version}"
+    def number
+      "#{@spec[:Type]} #{@row[:spec]}:#{@row[:release]}/#{version}"
     end
 
     #

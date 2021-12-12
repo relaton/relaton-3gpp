@@ -1,0 +1,170 @@
+= Relaton3gpp
+
+Relaton3gpp is a Ruby gem that implements the https://github.com/metanorma/metanorma-model-iso#iso-bibliographic-item[IsoBibliographicItem model].
+
+You can use it to retrieve metadata of W3C Standards from https://w3.org, and access such metadata through the `W3cBibliographicItem` object.
+
+== Installation
+
+Add this line to your application's Gemfile:
+
+[source,ruby]
+----
+gem 'relaton-3gpp'
+----
+
+And then execute:
+
+    $ bundle install
+
+Or install it yourself as:
+
+    $ gem install relaton-3gpp
+
+== Usage
+
+=== Search for a standard using keywords
+
+[source,ruby]
+----
+require 'relaton_3gpp'
+=> true
+
+item = Relaton3gpp::Bibliography.get "3GPP TR 00.01U:UMTS/3.0.0"
+[relaton-3gpp] ("3GPP TR 00.01U:UMTS/3.0.0") fetching...
+[relaton-3gpp] ("3GPP TR 00.01U:UMTS/3.0.0") found 3GPP TR 00.01U:UMTS/3.0.0
+=> #<Relaton3gpp::BibliographicItem:0x00007f92d94264e0
+...
+----
+
+=== XML serialization
+
+[source,ruby]
+----
+item.to_xml
+=> "<bibitem id="3GPPTR00.01U-UMTS/3.0.0" type="standard">
+  <fetched>2021-12-09</fetched>
+  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+  <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
+  <docidentifier type="3GPP">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
+  <docidentifier type="rapporteurId">2261</docidentifier>
+  <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
+  <language>en</language>
+  <script>Latn</script>
+  <status>
+    <stage>withdrawn</stage>
+  </status>
+</bibitem>"
+----
+
+With argument `bibdata: true` it ouputs XML wrapped by `bibdata` element and adds flavour `ext` element.
+
+[source,ruby]
+----
+item.to_xml bibdata: true
+=> "<bibdata type="standard">
+  <fetched>2021-12-09</fetched>
+  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+  <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
+  <docidentifier type="3GPP">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
+  <docidentifier type="rapporteurId">2261</docidentifier>
+  <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
+  <language>en</language>
+  <script>Latn</script>
+  <status>
+    <stage>withdrawn</stage>
+  </status>
+  <ext>
+    <doctype>TR</doctype>
+    <editorialgroup>
+      <technical-committee type="prime">SMG5</technical-committee>
+    </editorialgroup>
+    <radiotechnology>3G</radiotechnology>
+    <release>
+      <version2G>3</version2G>
+      <version3G>3</version3G>
+      <defunct>true</defunct>
+      <freeze-meeting>SMG-28</freeze-meeting>
+      <freeze-stage1-meeting>SMG-28</freeze-stage1-meeting>
+      <freeze-stage2-meeting>SMG-28</freeze-stage2-meeting>
+      <freeze-stage3-meeting>SMG-28</freeze-stage3-meeting>
+      <close-meeting>SP-28</close-meeting>
+      <project-end>1999-02-12</project-end>
+    </release>
+  </ext>
+</bibdata>"
+----
+
+=== Typed links
+
+Some of 3GPP documents have `src` type link.
+
+[source,ruby]
+----
+item.link.first.type
+=> "src"
+
+item.link.first.content
+==> #<Addressable::URI:0x320 URI:http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip>
+----
+
+=== Create bibliographic item from XML
+[source,ruby]
+----
+RelatonW3c::XMLParser.from_xml File.read('spec/fixtures/cr_json_ld11.xml')
+=> #<RelatonW3c::W3cBibliographicItem:0x007f9381efce98
+...
+----
+
+=== Create bibliographic item from YAML
+[source,ruby]
+----
+hash = YAML.load_file 'spec/fixtures/bib.yaml'
+=> {"id"=>"3GPPTR00.01U-UMTS/3.0.0",
+ "title"=>{"type"=>"main", "content"=>"Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)", "format"=>"text/plain"},
+...
+
+bib_hash = Relaton3gpp::HashConverter.hash_to_bib hash
+=> {:id=>"3GPPTR00.01U-UMTS/3.0.0",
+ :title=>
+  #<RelatonBib::TypedTitleStringCollection:0x00007f92aa8cdf40
+   @array=[{:type=>"main", :content=>"Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)", :format=>"text/plain"}]>,
+...
+
+Relaton3gpp::BibliographicItem.new(**bib_hash)
+=> #<Relaton3gpp::BibliographicItem:0x00007f92d953cbe0
+...
+----
+
+=== Fetch data
+
+There is a 3GPP dataset ftp://www.3gpp.org/Information/Databases/Spec_Status/[latest *.zip] which can be converted into RelatonXML/BibXML/BibYAML formats.
+
+The method `Relaton3GPP::DataFetcher.fetch(output: "data", format: "yaml")` converts all the documents from the dataset and save them to the `./data` folder in YAML format.
+Arguments:
+
+- `output` - folder to save documents (default './data').
+- `format` - format in which the documents are saved. Possimle formats are: `yaml`, `xml`, `bibxml` (default `yaml`).
+
+[source,ruby]
+----
+Relaton3GPP::DataFetcher.fetch
+Started at: 2021-12-10 19:58:46 +0100
+Stopped at: 2021-12-10 20:08:03 +0100
+Done in: 557 sec.
+=> nil
+----
+
+== Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+== Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/relaton/relaton_3gpp.
+
+== License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

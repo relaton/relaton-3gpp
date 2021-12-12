@@ -3,17 +3,20 @@
 module Relaton3gpp
   # Methods for search IANA standards.
   module Bibliography
-    SOURCE = "http://xml2rfc.tools.ietf.org/public/rfc/bibxml-3gpp-new/"
+    # SOURCE = "http://xml2rfc.tools.ietf.org/public/rfc/bibxml-3gpp-new/"
+    SOURCE = "https://raw.githubusercontent.com/relaton/relaton-data-3gpp/main/data/"
 
     # @param text [String]
     # @return [RelatonBib::BibliographicItem]
     def search(text) # rubocop:disable Metrics/MethodLength
-      file = text.sub(/^3GPP\s/, "")
-      url = "#{SOURCE}reference.#{file}.xml"
+      file = text.sub(/^3GPP\s/, "").gsub(/[\s,:\/]/, "_").squeeze("_").upcase
+      url = "#{SOURCE}#{file}.yaml"
       resp = Net::HTTP.get_response URI(url)
       return unless resp.code == "200"
 
-      RelatonBib::BibXMLParser.parse(resp.body)
+      hash = YAML.safe_load resp.body
+      bib_hash = Relaton3gpp::HashConverter.hash_to_bib(hash)
+      Relaton3gpp::BibliographicItem.new(**bib_hash)
     rescue SocketError, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
            EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError,
            Net::ProtocolError, Errno::ETIMEDOUT => e

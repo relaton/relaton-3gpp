@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
+
   # spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
   # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
 
@@ -35,15 +36,15 @@ Gem::Specification.new do |spec|
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
   spec.add_development_dependency "equivalent-xml", "~> 0.6"
-  spec.add_development_dependency "rubocop"
-  spec.add_development_dependency "rubocop-performance"
-  spec.add_development_dependency "rubocop-rails"
-  spec.add_development_dependency "ruby-jing"
-  spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "vcr"
-  spec.add_development_dependency "webmock"
+  spec.add_development_dependency "rubocop", "~> 1.23.0"
+  spec.add_development_dependency "rubocop-performance", "~> 1.12.0"
+  spec.add_development_dependency "rubocop-rails", "~> 2.12.0"
+  spec.add_development_dependency "ruby-jing", "~> 0.0.2"
+  spec.add_development_dependency "simplecov", "~> 0.21.2"
+  spec.add_development_dependency "vcr", "~> 6.0.0"
+  spec.add_development_dependency "webmock", "~> 3.14.0"
 
-  spec.add_dependency "mdb"
+  spec.add_dependency "mdb", "~> 0.5.0"
   spec.add_dependency "relaton-bib", "~> 1.9.0"
-  spec.add_dependency "rubyzip"
+  spec.add_dependency "rubyzip", "2.3.0"
 end

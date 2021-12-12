@@ -10,4 +10,45 @@ RSpec.describe Relaton3gpp do
     expect(hash).to be_instance_of String
     expect(hash.size).to eq 32
   end
+
+  context "get document" do
+    let(:bib) do
+      VCR.use_cassette "3gpp_get_document" do
+        Relaton3gpp::Bibliography.get "3GPP TR 00.01U:UMTS/3.0.0"
+      end
+    end
+
+    it "returns bibliographic item" do
+      expect(bib).to be_instance_of Relaton3gpp::BibliographicItem
+    end
+
+    it "render XML" do
+      file = "spec/fixtures/bib.xml"
+      xml = bib.to_xml
+      File.write file, xml, encoding: "UTF-8" unless File.exist? file
+      expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+    end
+
+    it "render XML with ext element" do
+      file = "spec/fixtures/bibdata.xml"
+      xml = bib.to_xml bibdata: true
+      File.write file, xml, encoding: "UTF-8" unless File.exist? file
+      expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+    end
+
+    it "render YAML" do
+      file = "spec/fixtures/bib.yaml"
+      hash = bib.to_hash
+      File.write file, hash.to_yaml, encoding: "UTF-8" unless File.exist? file
+      expect(hash).to be_equivalent_to YAML.load_file(file)
+    end
+  end
+
+  it "document not found" do
+    VCR.use_cassette "3gpp_document_not_found" do
+      expect do
+        expect(Relaton3gpp::Bibliography.get("not found")).to be_nil
+      end.to output(/not found/).to_stderr
+    end
+  end
 end

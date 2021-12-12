@@ -2,31 +2,24 @@ RSpec.describe Relaton3gpp::Parser do
   it "create instance and run parsing" do
     parser = double "parser"
     expect(parser).to receive(:parse)
-    expect(Relaton3gpp::Parser).to receive(:new).with(:row, :dbs).and_return(parser)
-    Relaton3gpp::Parser.parse(:row, :dbs)
+    expect(Relaton3gpp::Parser).to receive(:new).with(:row, :specs, :specrels, :releases).and_return(parser)
+    Relaton3gpp::Parser.parse(:row, :specs, :specrels, :releases)
   end
 
   it "initialize parser" do
-    dbs = double "dbs"
-    spec = double "spec"
-    expect(spec).to receive(:detect).and_yield({ Number: "00.00" }).and_return(:spec)
-    expect(dbs).to receive(:[]).with("Specs_GSM+3G").and_return(spec)
-    specrel = double "specrel"
-    expect(specrel).to receive(:detect).and_yield({ Spec: "00.00", Release: "R00" }).and_return(:specrel)
-    expect(dbs).to receive(:[]).with("Specs_GSM+3G_release-info").and_return(specrel)
-    rel = double "rel"
-    expect(rel).to receive(:detect).and_yield({ Release_code: "R00" }).and_return(:rel)
-    expect(dbs).to receive(:[]).with("Releases").and_return(rel)
+    specs = [{ Number: "00.00" }]
+    specrels = [{ Spec: "00.00", Release: "R00" }]
+    releases = [{ Release_code: "R00" }]
     row = { spec: "00.00", release: "R00" }
-    subj = Relaton3gpp::Parser.new row, dbs
+    subj = Relaton3gpp::Parser.new row, specs, specrels, releases
     expect(subj.instance_variable_get(:@row)).to be row
-    expect(subj.instance_variable_get(:@spec)).to eq :spec
-    expect(subj.instance_variable_get(:@specrel)).to eq :specrel
-    expect(subj.instance_variable_get(:@rel)).to eq :rel
+    expect(subj.instance_variable_get(:@spec)).to eq specs[0]
+    expect(subj.instance_variable_get(:@specrel)).to eq specrels[0]
+    expect(subj.instance_variable_get(:@rel)).to eq releases[0]
   end
 
   it "skip parsing doc" do
-    parser = Relaton3gpp::Parser.new({}, { "Specs_GSM+3G" => [] })
+    parser = Relaton3gpp::Parser.new({}, [], [], [])
     expect(parser.parse).to be_nil
   end
 
@@ -37,25 +30,23 @@ RSpec.describe Relaton3gpp::Parser do
         MAJOR_VERSION_NB: "1", TECHNICAL_VERSION_NB: "2", EDITORIAL_VERSION_NB: "3",
         completed: "2005-03-22 10:24:10", comment: "Comment"
       }
-      dbs = {
-        "Specs_GSM+3G" => [{
-          Number: "00.00", Title: "Title", description: "Abstract",
-          "title verified": "2002-02-06 15:46:51", "WG prime": "WG1",
-          "WG other": "WG2", "former WG": "WG3", "For publication": "1",
-          "2g": "1", "3g": "0", LTE: "0", "5g": "0"
-        }],
-        "Specs_GSM+3G_release-info" => [{
-          Spec: "00.00", Release: "R00", remarks: "Remarks", withdrawn: "1"
-        }],
-        "Releases" => [{
-          Release_code: "R00", "rel-proj-start": "1999-01-01 00:00:00",
-          "rel-proj-end": "1999-12-17 00:00:00", version_2g: "2", version_3g: "3",
-          defunct: "1", wpm_code_2g: "GSM_Release_99", wpm_code_3g: "3G_R1999",
-          "freeze meeting": "SP-06", Stage1_freeze: "SP-06", Stage2_freeze: "SP-06",
-          Stage3_freeze: "SP-06", Closed: "SP-40"
-        }],
-      }
-      Relaton3gpp::Parser.new(row, dbs)
+      specs = [{
+        Number: "00.00", Title: "Title", description: "Abstract",
+        "title verified": "2002-02-06 15:46:51", "WG prime": "WG1",
+        "WG other": "WG2", "former WG": "WG3", "For publication": "1",
+        "2g": "1", "3g": "0", LTE: "0", "5g": "0"
+      }]
+      specrels = [{
+        Spec: "00.00", Release: "R00", remarks: "Remarks", withdrawn: "1"
+      }]
+      releases = [{
+        Release_code: "R00", "rel-proj-start": "1999-01-01 00:00:00",
+        "rel-proj-end": "1999-12-17 00:00:00", version_2g: "2", version_3g: "3",
+        defunct: "1", wpm_code_2g: "GSM_Release_99", wpm_code_3g: "3G_R1999",
+        "freeze meeting": "SP-06", Stage1_freeze: "SP-06", Stage2_freeze: "SP-06",
+        Stage3_freeze: "SP-06", Closed: "SP-40"
+      }]
+      Relaton3gpp::Parser.new(row, specs, specrels, releases)
     end
 
     it "parse doc" do

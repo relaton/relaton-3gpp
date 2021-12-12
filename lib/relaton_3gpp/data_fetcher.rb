@@ -5,6 +5,7 @@ require "mdb"
 
 module Relaton3gpp
   class DataFetcher
+    CURRENT = "current.yaml".freeze
     #
     # Data fetcher initializer
     #
@@ -37,15 +38,20 @@ module Relaton3gpp
     #
     # Parse documents
     #
-    def fetch
+    def fetch # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       file = get_file
+      return unless file
+
       Zip::File.open(file) do |zip_file|
         enntry = zip_file.glob("status_smg_3GPP.mdb").first
         File.write "status_smg_3GPP.mdb", enntry.get_input_stream.read
       end
       dbs = Mdb.open "status_smg_3GPP.mdb"
+      specs = dbs["Specs_GSM+3G"]
+      specrels = dbs["Specs_GSM+3G_release-info"]
+      releases = dbs["Releases"]
       dbs["2001-04-25_schedule"].each do |row|
-        fetch_doc row, dbs
+        fetch_doc row, specs, specrels, releases
       end
     end
 
@@ -54,15 +60,21 @@ module Relaton3gpp
     #
     # @return [String] file name
     #
-    def get_file
+    def get_file # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      current = YAML.load_file CURRENT if File.exist? CURRENT
+      current ||= {}
       ftp = Net::FTP.new("www.3gpp.org")
       ftp.resume = true
       ftp.login
       ftp.chdir "/Information/Databases/Spec_Status/"
-      file_size, file = ftp.list("*.zip").first.split[2..3]
-      unless File.exist?(file) && file_size.to_i == File.size(file)
-        ftp.getbinaryfile file
-      end
+      d, t, _, file = ftp.list("*.zip").first.split
+      dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
+      return if file == current["file"] && dt == DateTime.parse(current["date"])
+
+      ftp.getbinaryfile file
+      current["file"] = file
+      current["date"] = dt.to_s
+      File.write CURRENT, current.to_yaml, encoding: "UTF-8"
       file
     end
 
@@ -74,11 +86,14 @@ module Relaton3gpp
     #
     # @return [Relaton3gpp::BibliographicItem, nil] bibliographic item
     #
-    def fetch_doc(row, dbs)
-      doc = Parser.parse row, dbs
+    def fetch_doc(row, specs, specrels, releases)
+      doc = Parser.parse row, specs, specrels, releases
       save_doc doc
     rescue StandardError => e
-      warn "Error: #{e.message}. Number: #{row[:Number]}"
+      warn "Error: #{e.message}"
+      warn "PubID: #{row[:spec]}:#{row[:release]}/#{row[:MAJOR_VERSION_NB]}."\
+           "#{row[:TECHNICAL_VERSION_NB]}.#{row[:EDITORIAL_VERSION_NB]}"
+      warn e.backtrace[0..5].join("\n")
     end
 
     #
@@ -111,7 +126,7 @@ module Relaton3gpp
     # @return [String] file name
     #
     def file_name(bib)
-      name = bib.docnumber.gsub(/[\s,:\/]/, "_").squeeze("_")
+      name = bib.docnumber.gsub(/[\s,:\/]/, "_").squeeze("_").upcase
       File.join @output, "#{name}.#{@ext}"
     end
   end

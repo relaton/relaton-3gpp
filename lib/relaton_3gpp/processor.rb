@@ -9,7 +9,7 @@ module Relaton3gpp
       @prefix = "3GPP"
       @defaultprefix = %r{^3GPP\s}
       @idtype = "3GPP"
-      @datasets = %w[bibxml-3gpp-new]
+      @datasets = %w[status-smg-3GPP]
     end
 
     # @param code [String]
@@ -35,14 +35,14 @@ module Relaton3gpp
     # @param xml [String]
     # @return [RelatonBib::BibliographicItem]
     def from_xml(xml)
-      ::RelatonBib::XMLParser.from_xml xml
+      ::Relaton3gpp::XMLParser.from_xml xml
     end
 
     # @param hash [Hash]
     # @return [RelatonBib::BibliographicItem]
     def hash_to_bib(hash)
-      item_hash = ::RelatonBib::HashConverter.hash_to_bib(hash)
-      ::RelatonWBib::BibliographicItem.new(**item_hash)
+      item_hash = ::Relaton3gpp::HashConverter.hash_to_bib(hash)
+      ::Relaton3gpp::BibliographicItem.new(**item_hash)
     end
 
     # Returns hash of XML grammar

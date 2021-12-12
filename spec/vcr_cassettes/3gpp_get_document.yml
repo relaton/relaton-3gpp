@@ -1,0 +1,111 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://raw.githubusercontent.com/relaton/relaton-data-3gpp/main/data/TR_00.01U_UMTS_3.0.0.yaml
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - raw.githubusercontent.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '457'
+      Cache-Control:
+      - max-age=300
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      Content-Type:
+      - text/plain; charset=utf-8
+      Etag:
+      - W/"5d2f491d96c7faf0fe7b769cefadb3f744327d06d70da694edc1386de14fee7a"
+      Strict-Transport-Security:
+      - max-age=31536000
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Github-Request-Id:
+      - A3D4:50D4:1378941:145AA4B:61B33055
+      Accept-Ranges:
+      - bytes
+      Date:
+      - Fri, 10 Dec 2021 10:57:20 GMT
+      Via:
+      - 1.1 varnish
+      X-Served-By:
+      - cache-sof1510050-SOF
+      X-Cache:
+      - MISS
+      X-Cache-Hits:
+      - '0'
+      X-Timer:
+      - S1639133841.597565,VS0,VE159
+      Vary:
+      - Authorization,Accept-Encoding,Origin
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Fastly-Request-Id:
+      - 8a1ff1555fd444ba30120573b53ae596f2da7637
+      Expires:
+      - Fri, 10 Dec 2021 11:02:20 GMT
+      Source-Age:
+      - '0'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        ---
+        id: 3GPPTR00.01U-UMTS/3.0.0
+        title:
+          type: main
+          content: Work programme for the standardization of Universal Mobile Telecommunications
+            System (UMTS)
+          format: text/plain
+        link:
+          content: http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip
+          type: src
+        type: standard
+        docid:
+        - id: 3GPP TR 00.01U:UMTS/3.0.0
+          type: 3GPP
+        - id: '2261'
+          type: rapporteurId
+        docnumber: TR 00.01U:UMTS/3.0.0
+        language: en
+        script: Latn
+        docstatus:
+          stage:
+            value: withdrawn
+        fetched: '2021-12-09'
+        doctype: TR
+        editorialgroup:
+          name: SMG5
+          type: prime
+        radiotechnology: 3G
+        release:
+          version2g: '3'
+          version3g: '3'
+          defunct: true
+          freeze_meeting: SMG-28
+          freeze_stage1_meeting: SMG-28
+          freeze_stage2_meeting: SMG-28
+          freeze_stage3_meeting: SMG-28
+          close_meeting: SP-28
+          project_end: '1999-02-12'
+  recorded_at: Fri, 10 Dec 2021 10:57:20 GMT
+recorded_with: VCR 6.0.0
