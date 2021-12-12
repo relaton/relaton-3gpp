@@ -63,18 +63,25 @@ module Relaton3gpp
     #
     # @return [String] file name
     #
-    def get_file # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def get_file # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
       @current = YAML.load_file CURRENT if File.exist? CURRENT
       @current ||= {}
-      ftp = Net::FTP.new("www.3gpp.org")
-      ftp.resume = true
-      ftp.login
-      ftp.chdir "/Information/Databases/Spec_Status/"
-      d, t, _, file = ftp.list("*.zip").first.split
-      dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
-      return if file == @current["file"] && dt == DateTime.parse(@current["date"])
+      n = 0
+      begin
+        ftp = Net::FTP.new("www.3gpp.org")
+        ftp.resume = true
+        ftp.login
+        ftp.chdir "/Information/Databases/Spec_Status/"
+        d, t, _, file = ftp.list("*.zip").first.split
+        dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
+        return if file == @current["file"] && dt == DateTime.parse(@current["date"])
 
-      ftp.getbinaryfile file
+        ftp.getbinaryfile file
+      rescue Net::ReadTimeout => e
+        n += 1
+        retry if n < 5
+        raise e
+      end
       @current["file"] = file
       @current["date"] = dt.to_s
       file
