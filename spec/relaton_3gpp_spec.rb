@@ -26,21 +26,29 @@ RSpec.describe Relaton3gpp do
       file = "spec/fixtures/bib.xml"
       xml = bib.to_xml
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
+      xml.sub!(/<fetched>\d{4}-\d{2}-\d{2}<\/fetched>/, "")
       expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+        .sub(/<fetched>\d{4}-\d{2}-\d{2}<\/fetched>/, "")
     end
 
     it "render XML with ext element" do
       file = "spec/fixtures/bibdata.xml"
       xml = bib.to_xml bibdata: true
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
+      xml.sub!(/<fetched>\d{4}-\d{2}-\d{2}<\/fetched>/, "")
       expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+        .sub(/<fetched>\d{4}-\d{2}-\d{2}<\/fetched>/, "")
     end
 
     it "render YAML" do
       file = "spec/fixtures/bib.yaml"
       hash = bib.to_hash
+      expect(hash["fetched"]).to match(/^\d{4}-\d{2}-\d{2}$/)
+      hash.delete("fetched")
       File.write file, hash.to_yaml, encoding: "UTF-8" unless File.exist? file
-      expect(hash).to be_equivalent_to YAML.load_file(file)
+      yaml = YAML.load_file(file)
+      yaml.delete("fetched")
+      expect(hash).to be_equivalent_to yaml
     end
   end
 

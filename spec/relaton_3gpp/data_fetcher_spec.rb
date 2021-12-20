@@ -87,6 +87,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         }
         expect(Mdb).to receive(:open).with("status_smg_3GPP.mdb").and_return(dbs)
         expect(subject).to receive(:fetch_doc).with({ spec: "00.00" }, :specs, :specrels, :releases)
+        expect(File).to receive(:write).with(Relaton3gpp::DataFetcher::CURRENT, kind_of(String), encoding: "UTF-8")
         subject.fetch
       end
 

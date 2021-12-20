@@ -151,10 +151,10 @@ module Relaton3gpp
     #
     # @return [RelatonBib::EditorialGroup] editorialgroups
     #
-    def parse_editorialgroup # rubocop:disable Metrics/MethodLength
+    def parse_editorialgroup # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       wgp = RelatonBib::WorkGroup.new(name: @spec[:"WG prime"], type: "prime")
       eg = [RelatonBib::TechnicalCommittee.new(wgp)]
-      if @spec[:"WG other"]
+      if @spec[:"WG other"] && @spec[:"WG other"] != "-"
         wgo = RelatonBib::WorkGroup.new(name: @spec[:"WG other"], type: "other")
         eg << RelatonBib::TechnicalCommittee.new(wgo)
       end

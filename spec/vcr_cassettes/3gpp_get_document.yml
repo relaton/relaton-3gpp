@@ -31,7 +31,7 @@ http_interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Etag:
-      - W/"5d2f491d96c7faf0fe7b769cefadb3f744327d06d70da694edc1386de14fee7a"
+      - W/"7009b8374f22f3635cb10802766a7f7c1af6e6edd132867cbadbc63b7e6100ab"
       Strict-Transport-Security:
       - max-age=31536000
       X-Content-Type-Options:
@@ -41,29 +41,29 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Github-Request-Id:
-      - A3D4:50D4:1378941:145AA4B:61B33055
+      - 0C40:DCD7:1285B60:1374DDA:61C05B9E
       Accept-Ranges:
       - bytes
       Date:
-      - Fri, 10 Dec 2021 10:57:20 GMT
+      - Mon, 20 Dec 2021 10:31:58 GMT
       Via:
       - 1.1 varnish
       X-Served-By:
-      - cache-sof1510050-SOF
+      - cache-sof1510023-SOF
       X-Cache:
       - MISS
       X-Cache-Hits:
       - '0'
       X-Timer:
-      - S1639133841.597565,VS0,VE159
+      - S1639996319.500056,VS0,VE250
       Vary:
       - Authorization,Accept-Encoding,Origin
       Access-Control-Allow-Origin:
       - "*"
       X-Fastly-Request-Id:
-      - 8a1ff1555fd444ba30120573b53ae596f2da7637
+      - e2ec32c00b01eba62c667eddf63dcf59504f177c
       Expires:
-      - Fri, 10 Dec 2021 11:02:20 GMT
+      - Mon, 20 Dec 2021 10:36:58 GMT
       Source-Age:
       - '0'
     body:
@@ -91,7 +91,7 @@ http_interactions:
         docstatus:
           stage:
             value: withdrawn
-        fetched: '2021-12-09'
+        fetched: '2021-12-13'
         doctype: TR
         editorialgroup:
           name: SMG5
@@ -107,5 +107,5 @@ http_interactions:
           freeze_stage3_meeting: SMG-28
           close_meeting: SP-28
           project_end: '1999-02-12'
-  recorded_at: Fri, 10 Dec 2021 10:57:20 GMT
+  recorded_at: Mon, 20 Dec 2021 10:31:58 GMT
 recorded_with: VCR 6.0.0
