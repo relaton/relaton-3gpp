@@ -172,10 +172,10 @@ module Relaton3gpp
     #
     def parse_note
       n = []
-      if @specrel && @specrel[:remarks]
+      if @specrel && @specrel[:remarks] && @specrel[:remarks] != "."
         n << RelatonBib::BiblioNote.new(type: "remark", content: @specrel[:remarks])
       end
-      if @row[:comment]
+      if @row[:comment] && @row[:comment] != "."
         n << RelatonBib::BiblioNote.new(type: "comment", content: @row[:comment])
       end
       RelatonBib::BiblioNoteCollection.new n
