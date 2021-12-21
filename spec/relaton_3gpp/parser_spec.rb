@@ -2,8 +2,10 @@ RSpec.describe Relaton3gpp::Parser do
   it "create instance and run parsing" do
     parser = double "parser"
     expect(parser).to receive(:parse)
-    expect(Relaton3gpp::Parser).to receive(:new).with(:row, :specs, :specrels, :releases).and_return(parser)
-    Relaton3gpp::Parser.parse(:row, :specs, :specrels, :releases)
+    expect(Relaton3gpp::Parser).to receive(:new).with(
+      :row, :specs, :specrels, :releases, :tstatus
+    ).and_return(parser)
+    Relaton3gpp::Parser.parse(:row, :specs, :specrels, :releases, :tstatus)
   end
 
   it "initialize parser" do
@@ -11,15 +13,17 @@ RSpec.describe Relaton3gpp::Parser do
     specrels = [{ Spec: "00.00", Release: "R00" }]
     releases = [{ Release_code: "R00" }]
     row = { spec: "00.00", release: "R00" }
-    subj = Relaton3gpp::Parser.new row, specs, specrels, releases
+    tstatus = [{ Number: "00.00", rapporteur: "Rapporteur" }]
+    subj = Relaton3gpp::Parser.new row, specs, specrels, releases, tstatus
     expect(subj.instance_variable_get(:@row)).to be row
     expect(subj.instance_variable_get(:@spec)).to eq specs[0]
     expect(subj.instance_variable_get(:@specrel)).to eq specrels[0]
     expect(subj.instance_variable_get(:@rel)).to eq releases[0]
+    expect(subj.instance_variable_get(:@tstatus)).to eq tstatus[0]
   end
 
   it "skip parsing doc" do
-    parser = Relaton3gpp::Parser.new({}, [], [], [])
+    parser = Relaton3gpp::Parser.new({}, [], [], [], [])
     expect(parser.parse).to be_nil
   end
 
@@ -43,10 +47,13 @@ RSpec.describe Relaton3gpp::Parser do
         Release_code: "R00", "rel-proj-start": "1999-01-01 00:00:00",
         "rel-proj-end": "1999-12-17 00:00:00", version_2g: "2", version_3g: "3",
         defunct: "1", wpm_code_2g: "GSM_Release_99", wpm_code_3g: "3G_R1999",
-        "freeze meeting": "SP-06", Stage1_freeze: "SP-06", Stage2_freeze: "SP-06",
-        Stage3_freeze: "SP-06", Closed: "SP-40"
+        "freeze meeting": "SP-06", Stage1_freeze: "SP-06",
+        Stage2_freeze: "SP-06", Stage3_freeze: "SP-06", Closed: "SP-40"
       }]
-      Relaton3gpp::Parser.new(row, specs, specrels, releases)
+      tstatus = [{
+        Number: "00.00", rapporteur: "Rapporteur", "rapp org": "Rapporteur org"
+      }]
+      Relaton3gpp::Parser.new(row, specs, specrels, releases, tstatus)
     end
 
     it "parse doc" do
@@ -89,7 +96,7 @@ RSpec.describe Relaton3gpp::Parser do
       docid = subject.parse_docid
       expect(docid).to be_instance_of Array
       expect(docid.first).to be_instance_of RelatonBib::DocumentIdentifier
-      expect(docid.size).to eq 2
+      expect(docid.size).to eq 1
       expect(docid.first.id).to eq "3GPP  00.00:R00/1.2.3"
     end
 
@@ -171,6 +178,15 @@ RSpec.describe Relaton3gpp::Parser do
       expect(release.instance_variable_get(:@close_meeting)).to eq "SP-40"
       expect(release.instance_variable_get(:@project_start)).to eq "1999-01-01"
       expect(release.instance_variable_get(:@project_end)).to eq "1999-12-17"
+    end
+
+    it "parse contributor" do
+      contrib = subject.parse_contributor
+      expect(contrib).to be_instance_of Array
+      expect(contrib[0]).to be_instance_of RelatonBib::ContributionInfo
+      expect(contrib[0].role[0].type).to eq "author"
+      expect(contrib[0].entity.name.completename.content).to eq "Rapporteur"
+      expect(contrib[0].entity.affiliation[0].organization.name[0].content).to eq "Rapporteur org"
     end
   end
 end

@@ -84,27 +84,31 @@ RSpec.describe Relaton3gpp::DataFetcher do
           "Specs_GSM+3G" => :specs,
           "Specs_GSM+3G_release-info" => :specrels,
           "Releases" => :releases,
+          "temp-status" => :tstatus,
         }
         expect(Mdb).to receive(:open).with("status_smg_3GPP.mdb").and_return(dbs)
-        expect(subject).to receive(:fetch_doc).with({ spec: "00.00" }, :specs, :specrels, :releases)
-        expect(File).to receive(:write).with(Relaton3gpp::DataFetcher::CURRENT, kind_of(String), encoding: "UTF-8")
+        expect(subject).to receive(:fetch_doc).with(
+          { spec: "00.00" }, :specs, :specrels, :releases, :tstatus
+        )
+        expect(File).to receive(:write).with(Relaton3gpp::DataFetcher::CURRENT,
+                                             kind_of(String), encoding: "UTF-8")
         subject.fetch
       end
 
       it "successfully" do
         row = { spec: "00.00" }
-        # dbs = double("dbs")
-        # doc = double("doc")
-        expect(Relaton3gpp::Parser).to receive(:parse).with(row, :specs, :specrels, :releases).and_return :doc
+        expect(Relaton3gpp::Parser).to receive(:parse).with(
+          row, :specs, :specrels, :releases, :tstatus
+        ).and_return :doc
         expect(subject).to receive(:save_doc).with(:doc)
-        subject.fetch_doc row, :specs, :specrels, :releases
+        subject.fetch_doc row, :specs, :specrels, :releases, :tstatus
       end
 
       it "warn when error" do
         row = { spec: "00.00", release: "R00", MAJOR_VERSION_NB: "1",
                 TECHNICAL_VERSION_NB: "2", EDITORIAL_VERSION_NB: "3" }
         expect(Relaton3gpp::Parser).to receive(:parse).and_raise(StandardError)
-        expect { subject.fetch_doc(row, :specs, :specrels, :releases) }
+        expect { subject.fetch_doc(row, :specs, :specrels, :releases, :tstatus) }
           .to output(/Error: StandardError\nPubID: 00\.00:R00\/1\.2\.3/m).to_stderr
       end
     end

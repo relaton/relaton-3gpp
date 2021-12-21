@@ -52,8 +52,9 @@ module Relaton3gpp
       specs = dbs["Specs_GSM+3G"]
       specrels = dbs["Specs_GSM+3G_release-info"]
       releases = dbs["Releases"]
+      tstatus = dbs["temp-status"]
       dbs["2001-04-25_schedule"].each do |row|
-        fetch_doc row, specs, specrels, releases
+        fetch_doc row, specs, specrels, releases, tstatus
       end
       File.write CURRENT, @current.to_yaml, encoding: "UTF-8"
     end
@@ -91,12 +92,15 @@ module Relaton3gpp
     # Fetch document
     #
     # @param [Hash] row row from mdb
-    # @param [Mdb] dbs mdb
+    # @param [Array<Hash>] specs specs
+    # @param [Array<Hash>] specrels specrels
+    # @param [Array<Hash>] releases releases
+    # @param [Array<Hash>] tstatus tstatus
     #
     # @return [Relaton3gpp::BibliographicItem, nil] bibliographic item
     #
-    def fetch_doc(row, specs, specrels, releases)
-      doc = Parser.parse row, specs, specrels, releases
+    def fetch_doc(row, specs, specrels, releases, tstatus)
+      doc = Parser.parse row, specs, specrels, releases, tstatus
       save_doc doc
     rescue StandardError => e
       warn "Error: #{e.message}"

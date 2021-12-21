@@ -7,8 +7,9 @@ module Relaton3gpp
     # @param [Array<Hash>] specrels Spec + Release table
     # @param [Array<Hash>] relaeases Releases table
     # @param [Array<Hash>] specs Specs table
+    # @param [Array<Hash>] tstatus temp status-table
     #
-    def initialize(row, specs, specrels, releases) # rubocop:disable Metrics/AbcSize
+    def initialize(row, specs, specrels, releases, tstatus) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       @row = row
       @spec = specs.detect { |s| s[:Number] == row[:spec] }
       if @spec
@@ -17,6 +18,7 @@ module Relaton3gpp
         end
         @rel = releases.detect { |r| r[:Release_code] == row[:release] }
       end
+      @tstatus = tstatus.detect { |t| t[:Number] == row[:spec] }
     end
 
     #
@@ -26,11 +28,12 @@ module Relaton3gpp
     # @param [Array<Hash>] specrels Spec + Release table
     # @param [Array<Hash>] relaeases Releases table
     # @param [Array<Hash>] specs Specs table
+    # @param [Array<Hash>] tstatus temp status-table
     #
     # @return [RelatonBib:BibliographicItem, nil] bibliographic item
     #
-    def self.parse(row, specs, specrels, relaeases)
-      new(row, specs, specrels, relaeases).parse
+    def self.parse(row, specs, specrels, relaeases, tstatus)
+      new(row, specs, specrels, relaeases, tstatus).parse
     end
 
     #
@@ -60,7 +63,7 @@ module Relaton3gpp
         common_ims_spec: @spec[:ComIMS] == "1",
         # internal: @spec[:"For publication"] == "0",
         release: parse_release,
-        # contributor: contributor,
+        contributor: parse_contributor,
       )
     end
 
@@ -103,11 +106,7 @@ module Relaton3gpp
     # @return [Arra<RelatonBib::DocumentIdentifier>] docidentifier
     #
     def parse_docid
-      [
-        RelatonBib::DocumentIdentifier.new(type: "3GPP", id: "3GPP #{number}"),
-        RelatonBib::DocumentIdentifier.new(type: "rapporteurId",
-                                           id: @spec[:"rapporteur id"]),
-      ]
+      [RelatonBib::DocumentIdentifier.new(type: "3GPP", id: "3GPP #{number}")]
     end
 
     #
@@ -152,17 +151,19 @@ module Relaton3gpp
     # @return [RelatonBib::EditorialGroup] editorialgroups
     #
     def parse_editorialgroup # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      wgp = RelatonBib::WorkGroup.new(name: @spec[:"WG prime"], type: "prime")
-      eg = [RelatonBib::TechnicalCommittee.new(wgp)]
+      eg = [create_workgroup(@spec[:"WG prime"], "prime")]
       if @spec[:"WG other"] && @spec[:"WG other"] != "-"
-        wgo = RelatonBib::WorkGroup.new(name: @spec[:"WG other"], type: "other")
-        eg << RelatonBib::TechnicalCommittee.new(wgo)
+        eg << create_workgroup(@spec[:"WG other"], "other")
       end
       if @spec[:"former WG"]
-        wgf = RelatonBib::WorkGroup.new(name: @spec[:"former WG"], type: "former")
-        eg << RelatonBib::TechnicalCommittee.new(wgf)
+        eg << create_workgroup(@spec[:"former WG"], "former")
       end
       RelatonBib::EditorialGroup.new eg
+    end
+
+    def create_workgroup(name, type)
+      wgf = RelatonBib::WorkGroup.new(name: name, type: type)
+      RelatonBib::TechnicalCommittee.new(wgf)
     end
 
     #
@@ -236,14 +237,21 @@ module Relaton3gpp
     #
     # Create contributor
     #
-    # @return [Array<RelatonBib::Contribution>] contributor
+    # @return [Array<RelatonBib::ContributionInfo>] contributor
     #
-    # def contributor
-    #   org = RelatonBib::Organization.new(
-    #     name: "Internet Assigned Numbers Authority", abbreviation: "IANA",
-    #   )
-    #   role = { type: "publisher" }
-    #   [RelatonBib::ContributionInfo.new(entity: org, role: [role])]
-    # end
+    def parse_contributor # rubocop:disable Metrics/MethodLength
+      return [] unless @tstatus && @tstatus[:rapporteur]
+
+      aff = []
+      if @tstatus[:"rapp org"]
+        org = RelatonBib::Organization.new(name: @tstatus[:"rapp org"])
+        cn = RelatonBib::LocalizedString.new @tstatus[:rapporteur], "en", "Latn"
+        name = RelatonBib::FullName.new(completename: cn)
+        aff << RelatonBib::Affiliation.new(organization: org)
+      end
+      person = RelatonBib::Person.new(name: name, affiliation: aff)
+      role = { type: "author" }
+      [RelatonBib::ContributionInfo.new(entity: person, role: [role])]
+    end
   end
 end
