@@ -32,6 +32,56 @@
         <ref name="DocumentType"/>
       </element>
     </define>
+    <define name="index">
+      <element name="index">
+        <optional>
+          <attribute name="to">
+            <data type="IDREF"/>
+          </attribute>
+        </optional>
+        <element name="primary">
+          <oneOrMore>
+            <choice>
+              <ref name="PureTextElement"/>
+              <ref name="stem"/>
+            </choice>
+          </oneOrMore>
+        </element>
+        <optional>
+          <element name="secondary">
+            <oneOrMore>
+              <choice>
+                <ref name="PureTextElement"/>
+                <ref name="stem"/>
+              </choice>
+            </oneOrMore>
+          </element>
+        </optional>
+        <optional>
+          <element name="tertiary">
+            <oneOrMore>
+              <choice>
+                <ref name="PureTextElement"/>
+                <ref name="stem"/>
+              </choice>
+            </oneOrMore>
+          </element>
+        </optional>
+      </element>
+    </define>
+    <define name="bibitem">
+      <element name="bibitem">
+        <attribute name="id">
+          <data type="ID"/>
+        </attribute>
+        <optional>
+          <attribute name="hidden">
+            <data type="boolean"/>
+          </attribute>
+        </optional>
+        <ref name="BibliographicItem"/>
+      </element>
+    </define>
     <define name="section-title">
       <element name="title">
         <zeroOrMore>
@@ -690,6 +740,7 @@
             <ref name="terms"/>
             <ref name="term-clause"/>
             <ref name="definitions"/>
+            <ref name="floating-title"/>
           </choice>
         </oneOrMore>
       </element>
@@ -1009,6 +1060,26 @@
           <choice>
             <ref name="PureTextElement"/>
             <ref name="index"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="sub">
+      <element name="sub">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+          </choice>
+        </zeroOrMore>
+      </element>
+    </define>
+    <define name="sup">
+      <element name="sup">
+        <zeroOrMore>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
           </choice>
         </zeroOrMore>
       </element>
@@ -1680,6 +1751,7 @@
           <ref name="clause-subsection"/>
           <ref name="terms"/>
           <ref name="definitions"/>
+          <ref name="floating-title"/>
         </choice>
       </oneOrMore>
     </choice>
@@ -1722,6 +1794,7 @@
           <ref name="terms"/>
           <ref name="definitions"/>
           <ref name="references"/>
+          <ref name="floating-title"/>
         </choice>
       </zeroOrMore>
     </group>
@@ -1794,6 +1867,20 @@
       <optional>
         <attribute name="id">
           <data type="ID"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="language"/>
+      </optional>
+      <optional>
+        <attribute name="script"/>
+      </optional>
+      <optional>
+        <attribute name="tag"/>
+      </optional>
+      <optional>
+        <attribute name="multilingual-rendering">
+          <ref name="MultilingualRenderingType"/>
         </attribute>
       </optional>
       <oneOrMore>
@@ -1959,7 +2046,11 @@
       </optional>
       <element name="name">
         <zeroOrMore>
-          <ref name="PureTextElement"/>
+          <choice>
+            <ref name="PureTextElement"/>
+            <ref name="stem"/>
+            <ref name="index"/>
+          </choice>
         </zeroOrMore>
       </element>
       <optional>
@@ -1973,7 +2064,7 @@
         </element>
       </optional>
       <optional>
-        <element name="grammar-info">
+        <element name="grammar">
           <ref name="Grammar"/>
         </element>
       </optional>
@@ -2182,7 +2273,18 @@
           <ref name="MultilingualRenderingType"/>
         </attribute>
       </optional>
-      <ref name="paragraph"/>
+      <oneOrMore>
+        <choice>
+          <ref name="formula"/>
+          <ref name="ul"/>
+          <ref name="ol"/>
+          <ref name="dl"/>
+          <ref name="quote"/>
+          <ref name="sourcecode"/>
+          <ref name="paragraph"/>
+          <ref name="figure"/>
+        </choice>
+      </oneOrMore>
     </element>
   </define>
   <define name="termsource">
@@ -2514,6 +2616,19 @@
       <oneOrMore>
         <ref name="BasicBlock"/>
       </oneOrMore>
+    </element>
+  </define>
+  <define name="floating-title">
+    <element name="floating-title">
+      <attribute name="id">
+        <data type="ID"/>
+      </attribute>
+      <attribute name="depth">
+        <data type="int"/>
+      </attribute>
+      <zeroOrMore>
+        <ref name="TextElement"/>
+      </zeroOrMore>
     </element>
   </define>
 </grammar>

@@ -185,8 +185,13 @@ RSpec.describe Relaton3gpp::Parser do
       expect(contrib).to be_instance_of Array
       expect(contrib[0]).to be_instance_of RelatonBib::ContributionInfo
       expect(contrib[0].role[0].type).to eq "author"
-      expect(contrib[0].entity.name.completename.content).to eq "Rapporteur"
-      expect(contrib[0].entity.affiliation[0].organization.name[0].content).to eq "Rapporteur org"
+      expect(contrib[0].entity).to be_instance_of RelatonBib::Organization
+      expect(contrib[0].entity.name[0].content).to eq "3rd Generation Partnership Project"
+      expect(contrib[0].entity.abbreviation.content).to eq "3GPP"
+      expect(contrib[1].role[0].type).to eq "author"
+      expect(contrib[1].entity).to be_instance_of RelatonBib::Person
+      expect(contrib[1].entity.name.completename.content).to eq "Rapporteur"
+      expect(contrib[1].entity.affiliation[0].organization.name[0].content).to eq "Rapporteur org"
     end
   end
 end

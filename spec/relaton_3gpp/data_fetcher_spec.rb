@@ -39,6 +39,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
 
         it "skip if no updates" do
           expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
+          allow(File).to receive(:exist?).and_call_original
           expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
             { "file" => "file.zip", "date" => "2021-11-22T14:39:00+00:00" },
           )

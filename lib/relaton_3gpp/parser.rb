@@ -235,12 +235,16 @@ module Relaton3gpp
     end
 
     #
-    # Create contributor
+    # Create contributors
     #
     # @return [Array<RelatonBib::ContributionInfo>] contributor
     #
-    def parse_contributor # rubocop:disable Metrics/MethodLength
-      return [] unless @tstatus && @tstatus[:rapporteur]
+    def parse_contributor # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      org = RelatonBib::Organization.new(
+        name: "3rd Generation Partnership Project", abbreviation: "3GPP",
+      )
+      contribs = [RelatonBib::ContributionInfo.new(entity: org, role: [type: "author"])]
+      return contribs unless @tstatus && @tstatus[:rapporteur]
 
       aff = []
       if @tstatus[:"rapp org"]
@@ -251,7 +255,7 @@ module Relaton3gpp
       end
       person = RelatonBib::Person.new(name: name, affiliation: aff)
       role = { type: "author" }
-      [RelatonBib::ContributionInfo.new(entity: person, role: [role])]
+      contribs << RelatonBib::ContributionInfo.new(entity: person, role: [role])
     end
   end
 end
