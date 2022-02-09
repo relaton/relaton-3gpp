@@ -52,10 +52,15 @@ module Relaton3gpp
       end
     end
 
+    #
+    # Render Hash.
+    #
+    # @return [Hash]
+    #
     def to_hash
       hash = {}
       instance_variables.each do |var|
-        unless instance_variable_get(var).nil? 
+        unless instance_variable_get(var).nil?
           hash[var.to_s.delete("@")] = instance_variable_get var
         end
       end

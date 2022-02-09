@@ -106,7 +106,7 @@ module Relaton3gpp
     # @return [Arra<RelatonBib::DocumentIdentifier>] docidentifier
     #
     def parse_docid
-      [RelatonBib::DocumentIdentifier.new(type: "3GPP", id: "3GPP #{number}")]
+      [RelatonBib::DocumentIdentifier.new(type: "3GPP", id: "3GPP #{number}", primary: true)]
     end
 
     #
