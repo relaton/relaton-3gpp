@@ -45,6 +45,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "webmock", "~> 3.14.0"
 
   spec.add_dependency "mdb", "~> 0.5.0"
+  spec.add_dependency "net-ftp", "~> 0.1.0"
   spec.add_dependency "relaton-bib", "~> 1.10.1"
   spec.add_dependency "rubyzip", "~> 2.3.0"
 end
