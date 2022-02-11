@@ -1,8 +1,3 @@
-require "fileutils"
-require "net/ftp"
-require "zip"
-require "mdb"
-
 module Relaton3gpp
   class DataFetcher
     CURRENT = "current.yaml".freeze
@@ -13,6 +8,11 @@ module Relaton3gpp
     # @param [String] format format of output files (xml, yaml, bibxml)
     #
     def initialize(output, format)
+      require "fileutils"
+      require "net/ftp"
+      require "zip"
+      require "mdb"
+
       @output = output
       @format = format
       @ext = format.sub(/^bib/, "")
