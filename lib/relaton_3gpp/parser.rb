@@ -64,6 +64,7 @@ module Relaton3gpp
         # internal: @spec[:"For publication"] == "0",
         release: parse_release,
         contributor: parse_contributor,
+        place: ["Sophia Antipolis Cedex, France"],
       )
     end
 
@@ -240,8 +241,12 @@ module Relaton3gpp
     # @return [Array<RelatonBib::ContributionInfo>] contributor
     #
     def parse_contributor # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      address = RelatonBib::Address.new(
+        street: ["c/o ETSI 650, route des Lucioles", "3GPP Mobile Competence Centre"],
+        postcode: "06921", city: "Sophia Antipolis Cedex", country: "France"
+      )
       org = RelatonBib::Organization.new(
-        name: "3rd Generation Partnership Project", abbreviation: "3GPP",
+        name: "3rd Generation Partnership Project", abbreviation: "3GPP", contact: [address],
       )
       contribs = [RelatonBib::ContributionInfo.new(entity: org, role: [type: "author"])]
       return contribs unless @tstatus && @tstatus[:rapporteur]

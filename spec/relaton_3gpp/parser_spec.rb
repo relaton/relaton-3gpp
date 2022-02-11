@@ -188,6 +188,12 @@ RSpec.describe Relaton3gpp::Parser do
       expect(contrib[0].entity).to be_instance_of RelatonBib::Organization
       expect(contrib[0].entity.name[0].content).to eq "3rd Generation Partnership Project"
       expect(contrib[0].entity.abbreviation.content).to eq "3GPP"
+      expect(contrib[0].entity.contact[0].country).to eq "France"
+      expect(contrib[0].entity.contact[0].street).to eq(
+        ["c/o ETSI 650, route des Lucioles", "3GPP Mobile Competence Centre"],
+      )
+      expect(contrib[0].entity.contact[0].city).to eq "Sophia Antipolis Cedex"
+      expect(contrib[0].entity.contact[0].postcode).to eq "06921"
       expect(contrib[1].role[0].type).to eq "author"
       expect(contrib[1].entity).to be_instance_of RelatonBib::Person
       expect(contrib[1].entity.name.completename.content).to eq "Rapporteur"
