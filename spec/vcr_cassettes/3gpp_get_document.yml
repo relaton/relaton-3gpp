@@ -23,7 +23,7 @@ http_interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '562'
+      - '712'
       Cache-Control:
       - max-age=300
       Content-Security-Policy:
@@ -31,7 +31,7 @@ http_interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Etag:
-      - W/"c7d5e5fe82f7acf338ee2018e084c4b51759b05adec00dac3a8ceff6ce47a97d"
+      - W/"e3e2a176f0171ab05d4abc79d6fb2199223dae579722ec8a7ad5443b59df28cc"
       Strict-Transport-Security:
       - max-age=31536000
       X-Content-Type-Options:
@@ -41,29 +41,29 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Github-Request-Id:
-      - 45BA:CCED:1813D1:1C438B:620294E0
+      - 6652:BD29:B57883:C5395E:6210DF45
       Accept-Ranges:
       - bytes
       Date:
-      - Tue, 08 Feb 2022 16:05:52 GMT
+      - Sat, 19 Feb 2022 12:15:01 GMT
       Via:
       - 1.1 varnish
       X-Served-By:
-      - cache-sof1510079-SOF
+      - cache-sof1510067-SOF
       X-Cache:
       - MISS
       X-Cache-Hits:
       - '0'
       X-Timer:
-      - S1644336352.131111,VS0,VE238
+      - S1645272902.633421,VS0,VE271
       Vary:
       - Authorization,Accept-Encoding,Origin
       Access-Control-Allow-Origin:
       - "*"
       X-Fastly-Request-Id:
-      - 6966a5af2ce5bbcf7bb12dad2ed653c40b8c0f89
+      - 3a391c00474f6616225bb620d10b9ec2da7822fd
       Expires:
-      - Tue, 08 Feb 2022 16:10:52 GMT
+      - Sat, 19 Feb 2022 12:20:01 GMT
       Source-Age:
       - '0'
     body:
@@ -83,8 +83,22 @@ http_interactions:
         docid:
         - id: 3GPP TR 00.01U:UMTS/3.0.0
           type: 3GPP
+          primary: true
         docnumber: TR 00.01U:UMTS/3.0.0
         contributor:
+        - organization:
+            name:
+            - 3rd Generation Partnership Project
+            abbreviation: 3GPP
+            contact:
+            - street:
+              - c/o ETSI 650, route des Lucioles
+              - 3GPP Mobile Competence Centre
+              city: Sophia Antipolis Cedex
+              country: France
+              postcode: '06921'
+          role:
+          - author
         - person:
             name:
               completename:
@@ -106,7 +120,9 @@ http_interactions:
         docstatus:
           stage:
             value: withdrawn
-        fetched: '2022-01-24'
+        place:
+        - Sophia Antipolis Cedex, France
+        fetched: '2022-02-16'
         doctype: TR
         editorialgroup:
         - name: SMG5
@@ -122,5 +138,5 @@ http_interactions:
           freeze_stage3_meeting: SMG-28
           close_meeting: SP-28
           project_end: '1999-02-12'
-  recorded_at: Tue, 08 Feb 2022 16:05:52 GMT
+  recorded_at: Sat, 19 Feb 2022 12:15:01 GMT
 recorded_with: VCR 6.0.0

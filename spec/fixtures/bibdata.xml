@@ -1,9 +1,23 @@
 <bibdata type="standard">
-  <fetched>2021-12-24</fetched>
+  <fetched>2022-02-16</fetched>
   <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
   <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
-  <docidentifier type="3GPP">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
+  <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
   <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
+  <contributor>
+    <role type="author"/>
+    <organization>
+      <name>3rd Generation Partnership Project</name>
+      <abbreviation>3GPP</abbreviation>
+      <address>
+        <street>c/o ETSI 650, route des Lucioles</street>
+        <street>3GPP Mobile Competence Centre</street>
+        <city>Sophia Antipolis Cedex</city>
+        <country>France</country>
+        <postcode>06921</postcode>
+      </address>
+    </organization>
+  </contributor>
   <contributor>
     <role type="author"/>
     <person>
@@ -22,6 +36,7 @@
   <status>
     <stage>withdrawn</stage>
   </status>
+  <place>Sophia Antipolis Cedex, France</place>
   <ext>
     <doctype>TR</doctype>
     <editorialgroup>

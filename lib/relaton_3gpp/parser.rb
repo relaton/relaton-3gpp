@@ -134,16 +134,18 @@ module Relaton3gpp
     # @return [Array<RelatonBib::BibliographicDate>] date
     #
     def parse_date
-      d = []
-      if @row[:completed]
-        cd = Date.parse(@row[:completed]).to_s
-        d << RelatonBib::BibliographicDate.new(type: "created", on: cd)
+      dates = { completed: "created", ACHIEVED_DATE: "published" }.each_with_object([]) do |(k, t), d|
+      # if @row[:completed]
+        next unless @row[k]
+
+        cd = Date.parse(@row[k]).to_s
+        d << RelatonBib::BibliographicDate.new(type: t, on: cd)
       end
       if @spec[:"title verified"]
         td = Date.parse(@spec[:"title verified"]).to_s
-        d << RelatonBib::BibliographicDate.new(type: "confirmed", on: td)
+        dates << RelatonBib::BibliographicDate.new(type: "confirmed", on: td)
       end
-      d
+      dates
     end
 
     #

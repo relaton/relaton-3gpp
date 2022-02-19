@@ -32,7 +32,8 @@ RSpec.describe Relaton3gpp::Parser do
       row = {
         spec: "00.00", release: "R00", location: "get it#http://example.com#",
         MAJOR_VERSION_NB: "1", TECHNICAL_VERSION_NB: "2", EDITORIAL_VERSION_NB: "3",
-        completed: "2005-03-22 10:24:10", comment: "Comment", "3guId": "18507"
+        completed: "2005-03-22 10:24:10", comment: "Comment", "3guId": "18507",
+        ACHIEVED_DATE: "2016-03-02 10:48:58"
       }
       specs = [{
         Number: "00.00", Title: "Title", description: "Abstract",
@@ -104,8 +105,13 @@ RSpec.describe Relaton3gpp::Parser do
       date = subject.parse_date
       expect(date).to be_instance_of Array
       expect(date.first).to be_instance_of RelatonBib::BibliographicDate
-      expect(date.size).to eq 2
+      expect(date.size).to eq 3
       expect(date.first.on).to eq "2005-03-22"
+      expect(date.first.type).to eq "created"
+      expect(date[1].on).to eq "2016-03-02"
+      expect(date[1].type).to eq "published"
+      expect(date[2].on).to eq "2002-02-06"
+      expect(date[2].type).to eq "confirmed"
     end
 
     it "parse editorialgroup" do
