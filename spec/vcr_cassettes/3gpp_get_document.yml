@@ -23,7 +23,7 @@ http_interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '712'
+      - '742'
       Cache-Control:
       - max-age=300
       Content-Security-Policy:
@@ -31,7 +31,7 @@ http_interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Etag:
-      - W/"e3e2a176f0171ab05d4abc79d6fb2199223dae579722ec8a7ad5443b59df28cc"
+      - W/"5a6b504923740a5333699cfb900329bc0771ece2c2c583a91a69ec17cb44852f"
       Strict-Transport-Security:
       - max-age=31536000
       X-Content-Type-Options:
@@ -41,29 +41,29 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Github-Request-Id:
-      - 6652:BD29:B57883:C5395E:6210DF45
+      - 5F44:13D0A:F75B6B:1015024:62501F7A
       Accept-Ranges:
       - bytes
       Date:
-      - Sat, 19 Feb 2022 12:15:01 GMT
+      - Fri, 08 Apr 2022 11:41:46 GMT
       Via:
       - 1.1 varnish
       X-Served-By:
-      - cache-sof1510067-SOF
+      - cache-vie6330-VIE
       X-Cache:
       - MISS
       X-Cache-Hits:
       - '0'
       X-Timer:
-      - S1645272902.633421,VS0,VE271
+      - S1649418107.573527,VS0,VE228
       Vary:
       - Authorization,Accept-Encoding,Origin
       Access-Control-Allow-Origin:
       - "*"
       X-Fastly-Request-Id:
-      - 3a391c00474f6616225bb620d10b9ec2da7822fd
+      - 9b538ff27bf176fa86fb80af4941f34bf8a27dec
       Expires:
-      - Sat, 19 Feb 2022 12:20:01 GMT
+      - Fri, 08 Apr 2022 11:46:46 GMT
       Source-Age:
       - '0'
     body:
@@ -85,6 +85,9 @@ http_interactions:
           type: 3GPP
           primary: true
         docnumber: TR 00.01U:UMTS/3.0.0
+        date:
+        - type: published
+          value: '1994-11-18'
         contributor:
         - organization:
             name:
@@ -113,6 +116,7 @@ http_interactions:
                 - PHILIPS CONSUMER COMMUNICATION
           role:
           - author
+        revdate: '1994-11-18'
         language:
         - en
         script:
@@ -122,7 +126,7 @@ http_interactions:
             value: withdrawn
         place:
         - Sophia Antipolis Cedex, France
-        fetched: '2022-02-16'
+        fetched: '2022-03-30'
         doctype: TR
         editorialgroup:
         - name: SMG5
@@ -138,5 +142,5 @@ http_interactions:
           freeze_stage3_meeting: SMG-28
           close_meeting: SP-28
           project_end: '1999-02-12'
-  recorded_at: Sat, 19 Feb 2022 12:15:01 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Fri, 08 Apr 2022 11:41:46 GMT
+recorded_with: VCR 6.1.0

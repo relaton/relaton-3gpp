@@ -12,7 +12,7 @@ module Relaton3gpp
       end
 
       # @param item_hash [Hash]
-      # @return [RelatonBib::BibliographicItem]
+      # @return [Relaton3gpp::BibliographicItem]
       def bib_item(item_hash)
         BibliographicItem.new(**item_hash)
       end
