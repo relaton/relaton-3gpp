@@ -250,7 +250,8 @@ module Relaton3gpp
       org = RelatonBib::Organization.new(
         name: "3rd Generation Partnership Project", abbreviation: "3GPP", contact: [address],
       )
-      contribs = [RelatonBib::ContributionInfo.new(entity: org, role: [type: "author"])]
+      roles = [{ type: "author" }, { type: "publisher" }]
+      contribs = [RelatonBib::ContributionInfo.new(entity: org, role: roles)]
       return contribs unless @tstatus && @tstatus[:rapporteur]
 
       aff = []
