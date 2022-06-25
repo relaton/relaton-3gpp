@@ -1,5 +1,5 @@
 <bibitem id="3GPPTR00.01U-UMTS/3.0.0" type="standard">
-  <fetched>2022-03-30</fetched>
+  <fetched>2022-04-30</fetched>
   <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
   <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
   <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
@@ -9,6 +9,7 @@
   </date>
   <contributor>
     <role type="author"/>
+    <role type="publisher"/>
     <organization>
       <name>3rd Generation Partnership Project</name>
       <abbreviation>3GPP</abbreviation>

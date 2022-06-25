@@ -23,7 +23,7 @@ http_interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '742'
+      - '746'
       Cache-Control:
       - max-age=300
       Content-Security-Policy:
@@ -31,7 +31,7 @@ http_interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Etag:
-      - W/"5a6b504923740a5333699cfb900329bc0771ece2c2c583a91a69ec17cb44852f"
+      - W/"ba4b443468f355962dc7524aa69c4ad80bbb98e840d6137fe420b6fa3fccf2d0"
       Strict-Transport-Security:
       - max-age=31536000
       X-Content-Type-Options:
@@ -41,29 +41,29 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Github-Request-Id:
-      - 8CB0:D240:706FA0:7584AC:6266B6A9
+      - 0E7C:5B11:1A183C:243F6C:62ADF1FE
       Accept-Ranges:
       - bytes
       Date:
-      - Mon, 25 Apr 2022 14:56:41 GMT
+      - Sat, 18 Jun 2022 15:40:46 GMT
       Via:
       - 1.1 varnish
       X-Served-By:
-      - cache-sof1510037-SOF
+      - cache-sof1510032-SOF
       X-Cache:
       - MISS
       X-Cache-Hits:
       - '0'
       X-Timer:
-      - S1650898602.586478,VS0,VE260
+      - S1655566846.296373,VS0,VE226
       Vary:
       - Authorization,Accept-Encoding,Origin
       Access-Control-Allow-Origin:
       - "*"
       X-Fastly-Request-Id:
-      - 813f37ccfdf38b26758133461768c73c51ff3729
+      - 5c64d15d344c09af81a5e9ee099050a5699d644f
       Expires:
-      - Mon, 25 Apr 2022 15:01:41 GMT
+      - Sat, 18 Jun 2022 15:45:46 GMT
       Source-Age:
       - '0'
     body:
@@ -102,6 +102,7 @@ http_interactions:
               postcode: '06921'
           role:
           - author
+          - publisher
         - person:
             name:
               completename:
@@ -126,7 +127,7 @@ http_interactions:
             value: withdrawn
         place:
         - Sophia Antipolis Cedex, France
-        fetched: '2022-03-30'
+        fetched: '2022-06-15'
         doctype: TR
         editorialgroup:
         - name: SMG5
@@ -142,5 +143,5 @@ http_interactions:
           freeze_stage3_meeting: SMG-28
           close_meeting: SP-28
           project_end: '1999-02-12'
-  recorded_at: Mon, 25 Apr 2022 14:56:41 GMT
+  recorded_at: Sat, 18 Jun 2022 15:40:46 GMT
 recorded_with: VCR 6.1.0
