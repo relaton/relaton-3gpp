@@ -45,7 +45,7 @@ RSpec.describe Relaton3gpp do
       hash = bib.to_hash
       expect(hash["fetched"]).to match(/^\d{4}-\d{2}-\d{2}$/)
       hash.delete("fetched")
-      File.write file, hash.to_yaml, encoding: "UTF-8" unless File.exist? file
+      File.write file, hash.to_yaml, encoding: "UTF-8"
       yaml = YAML.load_file(file)
       yaml.delete("fetched")
       expect(hash).to be_equivalent_to yaml
