@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description   = "RelatonIana: Ruby XMLDOC impementation."
   spec.homepage      = "https://github.com/relaton/relaton-iana"
   spec.license       = "BSD-2-Clause"
-  spec.required_ruby_version = ">= 2.5.0"
+  spec.required_ruby_version = ">= 2.6.0"
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 
@@ -46,6 +46,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "mdb", "~> 0.5.0"
   spec.add_dependency "net-ftp", "~> 0.1.0"
-  spec.add_dependency "relaton-bib", "~> 1.11.0"
+  spec.add_dependency "relaton-bib", "~> 1.12.0"
   spec.add_dependency "rubyzip", "~> 2.3.0"
 end

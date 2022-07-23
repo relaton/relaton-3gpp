@@ -1,7 +1,7 @@
 module Relaton3gpp
   class HashConverter < RelatonBib::HashConverter
     class << self
-      def hash_to_bib(args, nested = false)
+      def hash_to_bib(args)
         hash = super
         release_hash_to_bib(hash)
         hash

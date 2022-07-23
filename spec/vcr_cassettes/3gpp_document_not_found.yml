@@ -37,33 +37,33 @@ http_interactions:
       Content-Type:
       - text/plain; charset=utf-8
       X-Github-Request-Id:
-      - D906:10CE8:EDD55:113023:628F1852
+      - 37BC:9789:AE5250:BB4361:62ADF1FD
       Accept-Ranges:
       - bytes
       Date:
-      - Thu, 26 May 2022 06:04:02 GMT
+      - Sat, 18 Jun 2022 15:40:46 GMT
       Via:
       - 1.1 varnish
       X-Served-By:
-      - cache-fra19126-FRA
+      - cache-sof1510045-SOF
       X-Cache:
       - MISS
       X-Cache-Hits:
       - '0'
       X-Timer:
-      - S1653545042.312416,VS0,VE232
+      - S1655566846.882689,VS0,VE224
       Vary:
       - Authorization,Accept-Encoding,Origin
       Access-Control-Allow-Origin:
       - "*"
       X-Fastly-Request-Id:
-      - 3801d9d3cdae955913b6c91fc969a179fedc0086
+      - c903d49ce9727d09dc8f992f5f9b0457acb67b5e
       Expires:
-      - Thu, 26 May 2022 06:09:02 GMT
+      - Sat, 18 Jun 2022 15:45:46 GMT
       Source-Age:
       - '0'
     body:
       encoding: UTF-8
       string: '404: Not Found'
-  recorded_at: Thu, 26 May 2022 06:04:02 GMT
-recorded_with: VCR 6.0.0
+  recorded_at: Sat, 18 Jun 2022 15:40:45 GMT
+recorded_with: VCR 6.1.0
