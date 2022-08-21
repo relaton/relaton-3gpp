@@ -23,7 +23,7 @@ http_interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '746'
+      - '754'
       Cache-Control:
       - max-age=300
       Content-Security-Policy:
@@ -31,7 +31,7 @@ http_interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Etag:
-      - W/"ba4b443468f355962dc7524aa69c4ad80bbb98e840d6137fe420b6fa3fccf2d0"
+      - W/"bbd7f0c87384dd6862c84526ceedcbe809814a4681ced8f1e2a03507a6d36cf4"
       Strict-Transport-Security:
       - max-age=31536000
       X-Content-Type-Options:
@@ -41,29 +41,29 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Github-Request-Id:
-      - 0E7C:5B11:1A183C:243F6C:62ADF1FE
+      - 1CC6:518D:95579D:9E0C06:62FE6F35
       Accept-Ranges:
       - bytes
       Date:
-      - Sat, 18 Jun 2022 15:40:46 GMT
+      - Thu, 18 Aug 2022 16:56:21 GMT
       Via:
       - 1.1 varnish
       X-Served-By:
-      - cache-sof1510032-SOF
+      - cache-vie6354-VIE
       X-Cache:
       - MISS
       X-Cache-Hits:
       - '0'
       X-Timer:
-      - S1655566846.296373,VS0,VE226
+      - S1660841782.580524,VS0,VE254
       Vary:
       - Authorization,Accept-Encoding,Origin
       Access-Control-Allow-Origin:
       - "*"
       X-Fastly-Request-Id:
-      - 5c64d15d344c09af81a5e9ee099050a5699d644f
+      - 581fb228ac0bfa8b0a67a68f8a2582644da07b4e
       Expires:
-      - Sat, 18 Jun 2022 15:45:46 GMT
+      - Thu, 18 Aug 2022 17:01:21 GMT
       Source-Age:
       - '0'
     body:
@@ -94,12 +94,13 @@ http_interactions:
             - 3rd Generation Partnership Project
             abbreviation: 3GPP
             contact:
-            - street:
-              - c/o ETSI 650, route des Lucioles
-              - 3GPP Mobile Competence Centre
-              city: Sophia Antipolis Cedex
-              country: France
-              postcode: '06921'
+            - address:
+                street:
+                - c/o ETSI 650, route des Lucioles
+                - 3GPP Mobile Competence Centre
+                city: Sophia Antipolis Cedex
+                country: France
+                postcode: '06921'
           role:
           - author
           - publisher
@@ -127,7 +128,7 @@ http_interactions:
             value: withdrawn
         place:
         - Sophia Antipolis Cedex, France
-        fetched: '2022-06-15'
+        fetched: '2022-07-22'
         doctype: TR
         editorialgroup:
         - name: SMG5
@@ -143,5 +144,5 @@ http_interactions:
           freeze_stage3_meeting: SMG-28
           close_meeting: SP-28
           project_end: '1999-02-12'
-  recorded_at: Sat, 18 Jun 2022 15:40:46 GMT
+  recorded_at: Thu, 18 Aug 2022 16:56:21 GMT
 recorded_with: VCR 6.1.0
