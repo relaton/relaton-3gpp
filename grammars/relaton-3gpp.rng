@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <grammar xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-  <include href="isodoc.rng">
-    <start>
-      <ref name="iso-standard"/>
-    </start>
+  <include href="biblio-standoc.rng">
     <define name="DocumentType">
       <choice>
         <value>TR</value>
@@ -17,6 +14,9 @@
       </choice>
     </define>
     <define name="BibDataExtensionType">
+      <optional>
+        <attribute name="schema-version"/>
+      </optional>
       <ref name="doctype"/>
       <optional>
         <ref name="docsubtype"/>
@@ -64,42 +64,66 @@
   </define>
   <define name="release">
     <element name="release">
-      <element name="version2G">
-        <text/>
-      </element>
-      <element name="version3G">
-        <text/>
-      </element>
-      <element name="defunct">
-        <data type="boolean"/>
-      </element>
-      <element name="wpm-code-2G">
-        <text/>
-      </element>
-      <element name="wpm-code-3G">
-        <text/>
-      </element>
-      <element name="freeze-meeting">
-        <text/>
-      </element>
-      <element name="freeze-stage1-meeting">
-        <text/>
-      </element>
-      <element name="freeze-stage2-meeting">
-        <text/>
-      </element>
-      <element name="freeze-stage3-meeting">
-        <text/>
-      </element>
-      <element name="close-meeting">
-        <text/>
-      </element>
-      <element name="project-start">
-        <data type="date"/>
-      </element>
-      <element name="project-end">
-        <data type="date"/>
-      </element>
+      <optional>
+        <element name="version2G">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="version3G">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="defunct">
+          <data type="boolean"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="wpm-code-2G">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="wpm-code-3G">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="freeze-meeting">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="freeze-stage1-meeting">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="freeze-stage2-meeting">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="freeze-stage3-meeting">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="close-meeting">
+          <text/>
+        </element>
+      </optional>
+      <optional>
+        <element name="project-start">
+          <data type="date"/>
+        </element>
+      </optional>
+      <optional>
+        <element name="project-end">
+          <data type="date"/>
+        </element>
+      </optional>
     </element>
   </define>
 </grammar>

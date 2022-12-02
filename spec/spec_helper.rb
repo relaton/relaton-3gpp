@@ -3,6 +3,7 @@
 require "rspec/matchers"
 require "equivalent-xml"
 require "simplecov"
+require "jing"
 
 Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
 

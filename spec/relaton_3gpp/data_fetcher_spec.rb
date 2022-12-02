@@ -1,6 +1,5 @@
 RSpec.describe Relaton3gpp::DataFetcher do
   it "create output dir and run fetcher" do
-    expect(Dir).to receive(:exist?).with("dir").and_return(false)
     expect(FileUtils).to receive(:mkdir_p).with("dir")
     fetcher = double("fetcher")
     expect(fetcher).to receive(:fetch)

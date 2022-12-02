@@ -31,6 +31,27 @@ module Relaton3gpp
       super(**args)
     end
 
+    #
+    # Fetch the flavor shcema version
+    #
+    # @return [String] schema version
+    #
+    def ext_schema
+      @ext_schema ||= schema_versions["relaton-model-3gpp"]
+    end
+
+    #
+    # @override RelatonBib::BibliographicItem#makeid
+    #
+    # @param [RelatonBib::DocumentIdentifier, nil] identifier <description>
+    # @param [Boolean, nil] attribute true if the ID attribute is needed
+    #
+    # @return [String, nil] id
+    #
+    def makeid(identifier, attribute)
+      super&.sub(/^3GPP/, "")
+    end
+
     # @param opts [Hash]
     # @option opts [Nokogiri::XML::Builder] :builder XML builder
     # @option opts [Boolean] :bibdata
@@ -40,15 +61,16 @@ module Relaton3gpp
       super do |b|
         if block_given? then yield b
         elsif opts[:bibdata] && has_ext_attrs?
-          b.ext do
+          ext = b.ext do
             b.doctype doctype if doctype
             b.subdoctype subdoctype if subdoctype
             editorialgroup&.to_xml b
             ics.each { |i| i.to_xml b }
             b.radiotechnology @radiotechnology if @radiotechnology
-            b.send "common-ims-spec", @common_ims_spec if @common_ims_spec
-            @release&.to_xml b if @release
+            b.send :"common-ims-spec", @common_ims_spec if @common_ims_spec
+            @release&.to_xml b
           end
+          ext["schema-version"] = ext_schema unless opts[:embedded]
         end
       end
     end

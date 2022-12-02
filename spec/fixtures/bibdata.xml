@@ -1,5 +1,5 @@
-<bibdata type="standard">
-  <fetched>2022-04-30</fetched>
+<bibdata type="standard" schema-version="v1.2.1">
+  <fetched>2022-11-25</fetched>
   <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
   <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
   <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
@@ -41,7 +41,7 @@
     <stage>withdrawn</stage>
   </status>
   <place>Sophia Antipolis Cedex, France</place>
-  <ext>
+  <ext schema-version="v1.0.1">
     <doctype>TR</doctype>
     <editorialgroup>
       <technical-committee type="prime">SMG5</technical-committee>

@@ -42,19 +42,14 @@ item = Relaton3gpp::Bibliography.get "3GPP TR 00.01U:UMTS/3.0.0"
 [source,ruby]
 ----
 item.to_xml
-=> "<bibitem id="3GPPTR00.01U-UMTS/3.0.0" type="standard">
-  <fetched>2021-12-09</fetched>
-  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
-  <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
-  <docidentifier type="3GPP">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
-  <docidentifier type="rapporteurId">2261</docidentifier>
-  <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
-  <language>en</language>
-  <script>Latn</script>
-  <status>
-    <stage>withdrawn</stage>
-  </status>
-</bibitem>"
+=> "<bibitem id="3GPPTR00.01U-UMTS/3.0.0" type="standard" schema-version="v1.2.1">
+      <fetched>2022-12-02</fetched>
+      <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+      <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
+      <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
+      <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
+      ...
+    </bibitem>"
 ----
 
 With argument `bibdata: true` it ouputs XML wrapped by `bibdata` element and adds flavour `ext` element.
@@ -62,37 +57,33 @@ With argument `bibdata: true` it ouputs XML wrapped by `bibdata` element and add
 [source,ruby]
 ----
 item.to_xml bibdata: true
-=> "<bibdata type="standard">
-  <fetched>2021-12-09</fetched>
-  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
-  <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
-  <docidentifier type="3GPP">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
-  <docidentifier type="rapporteurId">2261</docidentifier>
-  <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
-  <language>en</language>
-  <script>Latn</script>
-  <status>
-    <stage>withdrawn</stage>
-  </status>
-  <ext>
-    <doctype>TR</doctype>
-    <editorialgroup>
-      <technical-committee type="prime">SMG5</technical-committee>
-    </editorialgroup>
-    <radiotechnology>3G</radiotechnology>
-    <release>
-      <version2G>3</version2G>
-      <version3G>3</version3G>
-      <defunct>true</defunct>
-      <freeze-meeting>SMG-28</freeze-meeting>
-      <freeze-stage1-meeting>SMG-28</freeze-stage1-meeting>
-      <freeze-stage2-meeting>SMG-28</freeze-stage2-meeting>
-      <freeze-stage3-meeting>SMG-28</freeze-stage3-meeting>
-      <close-meeting>SP-28</close-meeting>
-      <project-end>1999-02-12</project-end>
-    </release>
-  </ext>
-</bibdata>"
+=> "<bibdata type="standard" schema-version="v1.2.1">
+      <fetched>2022-12-02</fetched>
+      <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+      <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
+      <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
+      <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
+      ...
+        <ext schema-version="v1.0.1">
+          <doctype>TR</doctype>
+          <editorialgroup>
+            <technical-committee type="prime">SMG5</technical-committee>
+          </editorialgroup>
+          <radiotechnology>3G</radiotechnology>
+          <release>
+            <version2G>3</version2G>
+            <version3G>3</version3G>
+            <defunct>true</defunct>
+            <freeze-meeting>SMG-28</freeze-meeting>
+            <freeze-stage1-meeting>SMG-28</freeze-stage1-meeting>
+            <freeze-stage2-meeting>SMG-28</freeze-stage2-meeting>
+            <freeze-stage3-meeting>SMG-28</freeze-stage3-meeting>
+            <close-meeting>SP-28</close-meeting>
+            <project-end>1999-02-12</project-end>
+          </release>
+        </ext>
+      </ext>
+    </bibdata>"
 ----
 
 === Typed links
@@ -111,8 +102,8 @@ item.link.first.content
 === Create bibliographic item from XML
 [source,ruby]
 ----
-RelatonW3c::XMLParser.from_xml File.read('spec/fixtures/cr_json_ld11.xml')
-=> #<RelatonW3c::W3cBibliographicItem:0x007f9381efce98
+Relaton3gpp::XMLParser.from_xml File.read('spec/fixtures/bibdata.xml')
+=> #<Relaton3gpp::BibliographicItem:0x00007fcf5f21af30
 ...
 ----
 
@@ -120,15 +111,13 @@ RelatonW3c::XMLParser.from_xml File.read('spec/fixtures/cr_json_ld11.xml')
 [source,ruby]
 ----
 hash = YAML.load_file 'spec/fixtures/bib.yaml'
-=> {"id"=>"3GPPTR00.01U-UMTS/3.0.0",
- "title"=>{"type"=>"main", "content"=>"Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)", "format"=>"text/plain"},
+=> {"schema-version"=>"v1.2.1",
+ "id"=>"3GPPTR00.01U-UMTS/3.0.0",
 ...
 
 bib_hash = Relaton3gpp::HashConverter.hash_to_bib hash
-=> {:id=>"3GPPTR00.01U-UMTS/3.0.0",
- :title=>
-  #<RelatonBib::TypedTitleStringCollection:0x00007f92aa8cdf40
-   @array=[{:type=>"main", :content=>"Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)", :format=>"text/plain"}]>,
+=> {:"schema-version"=>"v1.2.1",
+ :id=>"3GPPTR00.01U-UMTS/3.0.0",
 ...
 
 Relaton3gpp::BibliographicItem.new(**bib_hash)
@@ -148,7 +137,7 @@ Arguments:
 
 [source,ruby]
 ----
-Relaton3GPP::DataFetcher.fetch
+Relaton3GPP::DataFetcher.fetch output: "data", format: "yaml"
 Started at: 2021-12-10 19:58:46 +0100
 Stopped at: 2021-12-10 20:08:03 +0100
 Done in: 557 sec.
