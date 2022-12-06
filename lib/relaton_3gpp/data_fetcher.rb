@@ -39,10 +39,10 @@ module Relaton3gpp
     #
     # Parse documents
     #
-    # @param [Boolean] renewal remove old files if true
+    # @param [Boolean] renewal force to update all documents
     #
     def fetch(renewal) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-      file = get_file
+      file = get_file renewal
       return unless file
 
       Zip::File.open(file) do |zip_file|
@@ -66,9 +66,11 @@ module Relaton3gpp
     #
     # Get file from FTP
     #
+    # @param [Boolean] renewal force to update all documents
+    #
     # @return [String] file name
     #
-    def get_file # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def get_file(renewal) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       @current = YAML.load_file CURRENT if File.exist? CURRENT
       @current ||= {}
       n = 0
@@ -78,8 +80,10 @@ module Relaton3gpp
         ftp.login
         ftp.chdir "/Information/Databases/Spec_Status/"
         d, t, _, file = ftp.list("*.zip").first.split
-        dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
-        return if file == @current["file"] && dt == DateTime.parse(@current["date"])
+        unless renewal
+          dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
+          return if file == @current["file"] && dt == DateTime.parse(@current["date"])
+        end
 
         ftp.getbinaryfile file
       rescue Net::ReadTimeout => e

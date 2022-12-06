@@ -42,13 +42,13 @@ RSpec.describe Relaton3gpp::DataFetcher do
           expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
             { "file" => "file.zip", "date" => "2021-11-22T14:39:00+00:00" },
           )
-          expect(subject.get_file).to be_nil
+          expect(subject.get_file(false)).to be_nil
         end
 
         it "download fist time" do
           expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(false)
           expect(ftp).to receive(:getbinaryfile).with("file.zip")
-          expect(subject.get_file).to eq "file.zip"
+          expect(subject.get_file(false)).to eq "file.zip"
         end
 
         it "download update" do
@@ -57,13 +57,13 @@ RSpec.describe Relaton3gpp::DataFetcher do
             { "file" => "file.zip", "date" => "2021-11-23T14:39:00+00:00" },
           )
           expect(ftp).to receive(:getbinaryfile).with("file.zip")
-          expect(subject.get_file).to eq "file.zip"
+          expect(subject.get_file(false)).to eq "file.zip"
         end
 
         it "retry file downloading from FTP" do
           expect(ftp).to receive(:getbinaryfile).with("file.zip").and_raise(Net::ReadTimeout).exactly(5).times
           expect do
-            subject.get_file
+            subject.get_file false
           end.to raise_error(Net::ReadTimeout)
         end
       end
