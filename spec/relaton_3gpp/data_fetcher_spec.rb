@@ -5,7 +5,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
     expect(fetcher).to receive(:fetch)
     expect(Relaton3gpp::DataFetcher)
       .to receive(:new).with("dir", "xml").and_return(fetcher)
-    Relaton3gpp::DataFetcher.fetch output: "dir", format: "xml"
+    Relaton3gpp::DataFetcher.fetch "status-smg-3GPP", output: "dir", format: "xml"
   end
 
   context "instance" do
@@ -93,7 +93,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         )
         expect(File).to receive(:write).with(Relaton3gpp::DataFetcher::CURRENT,
                                              kind_of(String), encoding: "UTF-8")
-        subject.fetch
+        subject.fetch true
       end
 
       it "successfully" do

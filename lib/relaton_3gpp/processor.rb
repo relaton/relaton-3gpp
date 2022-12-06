@@ -9,7 +9,7 @@ module Relaton3gpp
       @prefix = "3GPP"
       @defaultprefix = %r{^3GPP\s}
       @idtype = "3GPP"
-      @datasets = %w[status-smg-3GPP]
+      @datasets = %w[status-smg-3GPP status-smg-3GPP-force]
     end
 
     # @param code [String]
@@ -23,13 +23,13 @@ module Relaton3gpp
     #
     # Fetch all the documents from http://xml2rfc.tools.ietf.org/public/rfc/bibxml-3gpp-new/
     #
-    # @param [String] _source source name
+    # @param [String] source source name
     # @param [Hash] opts
     # @option opts [String] :output directory to output documents
     # @option opts [String] :format
     #
-    def fetch_data(_source, opts)
-      DataFetcher.fetch(**opts)
+    def fetch_data(source, opts)
+      DataFetcher.fetch(source, **opts)
     end
 
     # @param xml [String]

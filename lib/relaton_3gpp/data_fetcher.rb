@@ -22,14 +22,15 @@ module Relaton3gpp
     #
     # Initialize fetcher and run fetch
     #
+    # @param [Strin] source source name
     # @param [Strin] output directory to save files, default: "data"
     # @param [Strin] format format of output files (xml, yaml, bibxml), default: yaml
     #
-    def self.fetch(output: "data", format: "yaml")
+    def self.fetch(source, output: "data", format: "yaml")
       t1 = Time.now
       puts "Started at: #{t1}"
       FileUtils.mkdir_p output
-      new(output, format).fetch
+      new(output, format).fetch(source == "status-smg-3GPP-force")
       t2 = Time.now
       puts "Stopped at: #{t2}"
       puts "Done in: #{(t2 - t1).round} sec."
@@ -38,7 +39,9 @@ module Relaton3gpp
     #
     # Parse documents
     #
-    def fetch # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    # @param [Boolean] renewal remove old files if true
+    #
+    def fetch(renewal) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       file = get_file
       return unless file
 
@@ -53,7 +56,7 @@ module Relaton3gpp
       specrels = dbs["Specs_GSM+3G_release-info"]
       releases = dbs["Releases"]
       tstatus = dbs["temp-status"]
-      FileUtils.rm_f File.join(@output, "/*") if dbs["2001-04-25_schedule"].any?
+      FileUtils.rm_f File.join(@output, "/*") if renewal && dbs["2001-04-25_schedule"].any?
       dbs["2001-04-25_schedule"].each do |row|
         fetch_doc row, specs, specrels, releases, tstatus
       end

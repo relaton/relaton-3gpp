@@ -132,12 +132,13 @@ There is a 3GPP dataset ftp://www.3gpp.org/Information/Databases/Spec_Status/[la
 The method `Relaton3GPP::DataFetcher.fetch(output: "data", format: "yaml")` converts all the documents from the dataset and save them to the `./data` folder in YAML format.
 Arguments:
 
+- `source` - a data source name. Possible values are: `status-smg-3GPP` and `status-smg-3GPP-force`. The first one only downloads a dataset if it's updated. The second one forces this gem to download the latest dataset.
 - `output` - folder to save documents (default './data').
 - `format` - a format in which the documents are saved. Possible formats are: `yaml`, `xml`, `bibxml` (default `yaml`).
 
 [source,ruby]
 ----
-Relaton3GPP::DataFetcher.fetch output: "data", format: "yaml"
+Relaton3GPP::DataFetcher.fetch "status-smg-3GPP" output: "data", format: "yaml"
 Started at: 2021-12-10 19:58:46 +0100
 Stopped at: 2021-12-10 20:08:03 +0100
 Done in: 557 sec.
