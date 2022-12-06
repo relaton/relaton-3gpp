@@ -86,7 +86,8 @@ RSpec.describe Relaton3gpp::DataFetcher do
           "Releases" => :releases,
           "temp-status" => :tstatus,
         }
-        expect(Mdb).to receive(:open).with("status_smg_3GPP.mdb").and_return(dbs)
+        expect(Mdb).to receive(:open).with("status_smg_3GPP.mdb").and_return dbs
+        expect(FileUtils).to receive(:rm_rf).with("dir")
         expect(subject).to receive(:fetch_doc).with(
           { spec: "00.00" }, :specs, :specrels, :releases, :tstatus
         )

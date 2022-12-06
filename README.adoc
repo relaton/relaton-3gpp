@@ -52,7 +52,7 @@ item.to_xml
     </bibitem>"
 ----
 
-With argument `bibdata: true` it ouputs XML wrapped by `bibdata` element and adds flavour `ext` element.
+With argument `bibdata: true` it outputs XML wrapped by `bibdata` element and adds flavor `ext` element.
 
 [source,ruby]
 ----
@@ -88,7 +88,7 @@ item.to_xml bibdata: true
 
 === Typed links
 
-Some of 3GPP documents have `src` type link.
+Some 3GPP documents have `src` type link.
 
 [source,ruby]
 ----
@@ -133,7 +133,7 @@ The method `Relaton3GPP::DataFetcher.fetch(output: "data", format: "yaml")` conv
 Arguments:
 
 - `output` - folder to save documents (default './data').
-- `format` - format in which the documents are saved. Possimle formats are: `yaml`, `xml`, `bibxml` (default `yaml`).
+- `format` - a format in which the documents are saved. Possible formats are: `yaml`, `xml`, `bibxml` (default `yaml`).
 
 [source,ruby]
 ----

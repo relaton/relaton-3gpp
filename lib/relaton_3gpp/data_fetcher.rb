@@ -53,6 +53,7 @@ module Relaton3gpp
       specrels = dbs["Specs_GSM+3G_release-info"]
       releases = dbs["Releases"]
       tstatus = dbs["temp-status"]
+      FileUtils.rm_rf @output if dbs["2001-04-25_schedule"].any?
       dbs["2001-04-25_schedule"].each do |row|
         fetch_doc row, specs, specrels, releases, tstatus
       end
