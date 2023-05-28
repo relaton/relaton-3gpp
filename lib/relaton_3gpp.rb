@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "net/http"
+require "relaton/index"
 require "relaton_bib"
 require_relative "relaton_3gpp/version"
 require_relative "relaton_3gpp/release"

@@ -23,7 +23,7 @@ http_interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '754'
+      - '1571'
       Cache-Control:
       - max-age=300
       Content-Security-Policy:
@@ -31,7 +31,7 @@ http_interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Etag:
-      - W/"7c959a43129b264a7c1e12e965e5c264a2a5f981072544989a9873d021c46a8d"
+      - W/"6c3d4b591f99dfd3f421ea38df7ea93c5810872095fe1c73dcf7114dde584890"
       Strict-Transport-Security:
       - max-age=31536000
       X-Content-Type-Options:
@@ -41,36 +41,37 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Github-Request-Id:
-      - 2B3E:3778:6EAA07:93283E:638A6298
+      - 3ED6:340B:707D4:8878C:6472729C
       Accept-Ranges:
       - bytes
       Date:
-      - Fri, 02 Dec 2022 20:39:52 GMT
+      - Sat, 27 May 2023 21:14:04 GMT
       Via:
       - 1.1 varnish
       X-Served-By:
-      - cache-atl18428-ATL
+      - cache-atl18429-ATL
       X-Cache:
       - MISS
       X-Cache-Hits:
       - '0'
       X-Timer:
-      - S1670013593.826832,VS0,VE145
+      - S1685222044.015612,VS0,VE137
       Vary:
       - Authorization,Accept-Encoding,Origin
       Access-Control-Allow-Origin:
       - "*"
       X-Fastly-Request-Id:
-      - 37e0173e1256e673f05d0344edb0792044299b66
+      - 81de2875f91a935e6845962c3c8398d31a927132
       Expires:
-      - Fri, 02 Dec 2022 20:44:52 GMT
+      - Sat, 27 May 2023 21:19:04 GMT
       Source-Age:
       - '0'
     body:
       encoding: ASCII-8BIT
       string: |
         ---
-        id: 3GPPTR00.01U-UMTS/3.0.0
+        schema-version: v1.2.3
+        id: TR00.01U-UMTS-3.0.0
         title:
         - content: Work programme for the standardization of Universal Mobile Telecommunications
             System (UMTS)
@@ -103,8 +104,8 @@ http_interactions:
                 country: France
                 postcode: '06921'
           role:
-          - author
-          - publisher
+          - type: author
+          - type: publisher
         - person:
             name:
               completename:
@@ -118,7 +119,7 @@ http_interactions:
                 name:
                 - content: PHILIPS CONSUMER COMMUNICATION
           role:
-          - author
+          - type: author
         revdate: '1994-11-18'
         language:
         - en
@@ -129,11 +130,12 @@ http_interactions:
             value: withdrawn
         place:
         - Sophia Antipolis Cedex, France
-        fetched: '2022-09-21'
         doctype: TR
         editorialgroup:
         - name: SMG5
           type: prime
+        ext:
+          schema-version: v1.0.1
         radiotechnology: 3G
         release:
           version2g: '3'
@@ -145,5 +147,5 @@ http_interactions:
           freeze_stage3_meeting: SMG-28
           close_meeting: SP-28
           project_end: '1999-02-12'
-  recorded_at: Fri, 02 Dec 2022 20:39:52 GMT
+  recorded_at: Sat, 27 May 2023 21:14:04 GMT
 recorded_with: VCR 6.0.0

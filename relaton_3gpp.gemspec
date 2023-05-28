@@ -8,11 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Ribose Inc."]
   spec.email         = ["open.source@ribose.com"]
 
-  spec.summary       = "RelatonIana: Ruby XMLDOC impementation."
-  spec.description   = "RelatonIana: Ruby XMLDOC impementation."
-  spec.homepage      = "https://github.com/relaton/relaton-iana"
+  spec.summary       = "Relaton3gpp: Ruby XMLDOC impementation."
+  spec.description   = "Relaton3gpp: Ruby XMLDOC impementation."
+  spec.homepage      = "https://github.com/relaton/relaton-3gpp"
   spec.license       = "BSD-2-Clause"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 2.7.0"
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 
@@ -35,17 +35,10 @@ Gem::Specification.new do |spec|
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
-  spec.add_development_dependency "equivalent-xml", "~> 0.6"
-  spec.add_development_dependency "rubocop", "~> 1.23.0"
-  spec.add_development_dependency "rubocop-performance", "~> 1.12.0"
-  spec.add_development_dependency "rubocop-rails", "~> 2.12.0"
-  spec.add_development_dependency "ruby-jing", "~> 0.0.2"
-  spec.add_development_dependency "simplecov", "~> 0.21.2"
-  spec.add_development_dependency "vcr", "~> 6.0.0"
-  spec.add_development_dependency "webmock", "~> 3.14.0"
 
   spec.add_dependency "mdb", "~> 0.5.0"
   spec.add_dependency "net-ftp", "~> 0.1.0"
   spec.add_dependency "relaton-bib", "~> 1.14.0"
+  spec.add_dependency "relaton-index", "~> 0.2.0"
   spec.add_dependency "rubyzip", "~> 2.3.0"
 end

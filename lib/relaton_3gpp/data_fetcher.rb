@@ -19,6 +19,10 @@ module Relaton3gpp
       @files = []
     end
 
+    def index
+      @index ||= Relaton::Index.find_or_create "3gpp", file: "index-v1.yaml"
+    end
+
     #
     # Initialize fetcher and run fetch
     #
@@ -45,6 +49,7 @@ module Relaton3gpp
       file = get_file renewal
       return unless file
 
+      index.remove_all if renewal
       Zip::File.open(file) do |zip_file|
         enntry = zip_file.glob("status_smg_3GPP.mdb").first
         File.open("status_smg_3GPP.mdb", "wb") do |f|
@@ -61,6 +66,7 @@ module Relaton3gpp
         fetch_doc row, specs, specrels, releases, tstatus
       end
       File.write CURRENT, @current.to_yaml, encoding: "UTF-8"
+      index.save
     end
 
     #
@@ -136,6 +142,7 @@ module Relaton3gpp
       else
         @files << file
       end
+      index.add_or_update bib.docnumber, file
       File.write file, c, encoding: "UTF-8"
     end
 

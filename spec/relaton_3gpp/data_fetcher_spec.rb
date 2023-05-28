@@ -70,6 +70,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
 
       it "fetch" do
         expect(subject).to receive(:get_file).and_return("file.zip")
+        expect(subject.index).to receive(:remove_all)
         zip = double("zip")
         input_stream = double("input_stream", read: "data")
         entry = double("entry", get_input_stream: input_stream)
@@ -93,6 +94,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         )
         expect(File).to receive(:write).with(Relaton3gpp::DataFetcher::CURRENT,
                                              kind_of(String), encoding: "UTF-8")
+        expect(subject.index).to receive(:save)
         subject.fetch true
       end
 
@@ -125,6 +127,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         expect(bib).to receive(:to_bibxml).and_return("<xml/>")
         expect(File).to receive(:write)
           .with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
+        expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.xml")
         subject.save_doc bib
       end
 
@@ -134,6 +137,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         expect(bib).to receive(:to_xml).with(bibdata: true).and_return("<xml/>")
         expect(File).to receive(:write)
           .with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
+        expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.xml")
         subject.save_doc bib
       end
 
@@ -144,6 +148,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         expect(bib).to receive(:to_hash).and_return({ id: 123 })
         expect(File).to receive(:write)
           .with("dir/BIB.yaml", /id: 123/, encoding: "UTF-8")
+        expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.yaml")
         subject.save_doc bib
       end
 
@@ -153,6 +158,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         expect(bib).to receive(:to_bibxml).and_return("<xml/>")
         expect(File).to receive(:write)
           .with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
+        expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.xml")
         expect { subject.save_doc bib }
           .to output(/File dir\/BIB.xml already exists/).to_stderr
       end
