@@ -50,5 +50,12 @@ module Relaton3gpp
     def grammar_hash
       @grammar_hash ||= ::Relaton3gpp.grammar_hash
     end
+
+    #
+    # Remove index file
+    #
+    def remove_index_file
+      Relaton::Index.find_or_create("3GPP", url: true, file: Bibliography::INDEX_FILE).remove_file
+    end
   end
 end

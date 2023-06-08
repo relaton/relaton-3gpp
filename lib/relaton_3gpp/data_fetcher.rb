@@ -49,7 +49,6 @@ module Relaton3gpp
       file = get_file renewal
       return unless file
 
-      index.remove_all if renewal
       Zip::File.open(file) do |zip_file|
         enntry = zip_file.glob("status_smg_3GPP.mdb").first
         File.open("status_smg_3GPP.mdb", "wb") do |f|
@@ -61,7 +60,10 @@ module Relaton3gpp
       specrels = dbs["Specs_GSM+3G_release-info"]
       releases = dbs["Releases"]
       tstatus = dbs["temp-status"]
-      FileUtils.rm_f File.join(@output, "/*") if renewal && dbs["2001-04-25_schedule"].any?
+      if renewal && dbs["2001-04-25_schedule"].any?
+        FileUtils.rm_f File.join(@output, "/*") # if renewal && dbs["2001-04-25_schedule"].any?
+        index.remove_all # if renewal
+      end
       dbs["2001-04-25_schedule"].each do |row|
         fetch_doc row, specs, specrels, releases, tstatus
       end
