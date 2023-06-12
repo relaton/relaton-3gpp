@@ -90,7 +90,7 @@ module Relaton3gpp
         d, t, _, file = ftp.list("*.zip").first.split
         unless renewal
           dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
-          return if file == @current["file"] && dt == DateTime.parse(@current["date"])
+          return if file == @current["file"] && !@current["date"].empty? && dt == DateTime.parse(@current["date"])
         end
 
         ftp.getbinaryfile file

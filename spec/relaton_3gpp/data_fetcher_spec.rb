@@ -9,6 +9,8 @@ RSpec.describe Relaton3gpp::DataFetcher do
   end
 
   context "instance" do
+    require "net/ftp"
+
     subject { Relaton3gpp::DataFetcher.new("dir", "bibxml") }
 
     it "initialize fetcher" do
@@ -65,6 +67,14 @@ RSpec.describe Relaton3gpp::DataFetcher do
           expect do
             subject.get_file false
           end.to raise_error(Net::ReadTimeout)
+        end
+
+        it "download if current date is empty" do
+          expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
+          current = { "file" => "file.zip", "date" => "" }
+          expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return current
+          expect(ftp).to receive(:getbinaryfile).with("file.zip")
+          expect(subject.get_file(false)).to eq "file.zip"
         end
       end
 
