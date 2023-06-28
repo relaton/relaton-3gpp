@@ -72,11 +72,11 @@ module Relaton3gpp
     end
 
     #
-    # Get file from FTP
+    # Get file from FTP. If file does not exist or changed, return nil
     #
     # @param [Boolean] renewal force to update all documents
     #
-    # @return [String] file name
+    # @return [String, nil] file name
     #
     def get_file(renewal) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       @current = YAML.load_file CURRENT if File.exist? CURRENT
@@ -87,7 +87,10 @@ module Relaton3gpp
         ftp.resume = true
         ftp.login
         ftp.chdir "/Information/Databases/Spec_Status/"
-        d, t, _, file = ftp.list("*.zip").first.split
+        file_path = ftp.list("*.zip").first
+        return unless file_path
+
+        d, t, _, file = file_path.split
         unless renewal
           dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
           return if file == @current["file"] && !@current["date"].empty? && dt == DateTime.parse(@current["date"])

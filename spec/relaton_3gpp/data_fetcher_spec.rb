@@ -28,9 +28,6 @@ RSpec.describe Relaton3gpp::DataFetcher do
           expect(f).to receive(:resume=).with(true).at_least(:once)
           expect(f).to receive(:login).at_least(:once)
           expect(f).to receive(:chdir).with("/Information/Databases/Spec_Status/").at_least(:once)
-          expect(f).to receive(:list).with("*.zip").and_return(
-            ["11-22-21  02:39PM            459946195 file.zip"],
-          ).at_least(:once)
           f
         end
 
@@ -38,43 +35,56 @@ RSpec.describe Relaton3gpp::DataFetcher do
           expect(Net::FTP).to receive(:new).and_return(ftp).at_least(:once)
         end
 
-        it "skip if no updates" do
-          expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
-          allow(File).to receive(:exist?).and_call_original
-          expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
-            { "file" => "file.zip", "date" => "2021-11-22T14:39:00+00:00" },
-          )
+        context do
+          before do
+            expect(ftp).to receive(:list).with("*.zip").and_return(
+              ["11-22-21  02:39PM            459946195 file.zip"],
+            ).at_least(:once)
+          end
+
+          it "skip if no updates" do
+            expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
+            allow(File).to receive(:exist?).and_call_original
+            expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
+              { "file" => "file.zip", "date" => "2021-11-22T14:39:00+00:00" },
+            )
+            expect(subject.get_file(false)).to be_nil
+          end
+
+          it "download fist time" do
+            expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(false)
+            expect(ftp).to receive(:getbinaryfile).with("file.zip")
+            expect(subject.get_file(false)).to eq "file.zip"
+          end
+
+          it "download update" do
+            expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
+            expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
+              { "file" => "file.zip", "date" => "2021-11-23T14:39:00+00:00" },
+            )
+            expect(ftp).to receive(:getbinaryfile).with("file.zip")
+            expect(subject.get_file(false)).to eq "file.zip"
+          end
+
+          it "retry file downloading from FTP" do
+            expect(ftp).to receive(:getbinaryfile).with("file.zip").and_raise(Net::ReadTimeout).exactly(5).times
+            expect do
+              subject.get_file false
+            end.to raise_error(Net::ReadTimeout)
+          end
+
+          it "download if current date is empty" do
+            expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
+            current = { "file" => "file.zip", "date" => "" }
+            expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return current
+            expect(ftp).to receive(:getbinaryfile).with("file.zip")
+            expect(subject.get_file(false)).to eq "file.zip"
+          end
+        end
+
+        it "return nil if no files" do
+          expect(ftp).to receive(:list).with("*.zip").and_return([])
           expect(subject.get_file(false)).to be_nil
-        end
-
-        it "download fist time" do
-          expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(false)
-          expect(ftp).to receive(:getbinaryfile).with("file.zip")
-          expect(subject.get_file(false)).to eq "file.zip"
-        end
-
-        it "download update" do
-          expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
-          expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
-            { "file" => "file.zip", "date" => "2021-11-23T14:39:00+00:00" },
-          )
-          expect(ftp).to receive(:getbinaryfile).with("file.zip")
-          expect(subject.get_file(false)).to eq "file.zip"
-        end
-
-        it "retry file downloading from FTP" do
-          expect(ftp).to receive(:getbinaryfile).with("file.zip").and_raise(Net::ReadTimeout).exactly(5).times
-          expect do
-            subject.get_file false
-          end.to raise_error(Net::ReadTimeout)
-        end
-
-        it "download if current date is empty" do
-          expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
-          current = { "file" => "file.zip", "date" => "" }
-          expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return current
-          expect(ftp).to receive(:getbinaryfile).with("file.zip")
-          expect(subject.get_file(false)).to eq "file.zip"
         end
       end
 
