@@ -18,9 +18,9 @@ module Relaton3gpp
   # Returns hash of XML reammar
   # @return [String]
   def self.grammar_hash
-    gem_path = File.expand_path "..", __dir__
-    grammars_path = File.join gem_path, "grammars", "*"
-    grammars = Dir[grammars_path].sort.map { |gp| File.read gp }.join
-    Digest::MD5.hexdigest grammars
+    # gem_path = File.expand_path "..", __dir__
+    # grammars_path = File.join gem_path, "grammars", "*"
+    # grammars = Dir[grammars_path].sort.map { |gp| File.read gp }.join
+    Digest::MD5.hexdigest Relaton3gpp::VERSION + RelatonBib::VERSION # grammars
   end
 end
