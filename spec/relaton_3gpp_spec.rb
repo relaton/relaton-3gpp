@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Relaton3gpp do
+  before { Relaton3gpp.instance_variable_set(:@configuration, nil) }
+
   it "has a version number" do
     expect(Relaton3gpp::VERSION).not_to be nil
   end

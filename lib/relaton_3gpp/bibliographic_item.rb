@@ -14,19 +14,19 @@ module Relaton3gpp
     def initialize(**args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       @radiotechnology = args.delete(:radiotechnology)
       if @radiotechnology && !RADIOTECHNOLOGIES.include?(@radiotechnology)
-        warn "[relaton-3gpp] Unknown radiotechnology type: #{@radiotechnology}"
-        warn "[relaton-3gpp] Possible radiotechnology types: #{RADIOTECHNOLOGIES.join ' '}"
+        Util.warn "Unknown radiotechnology type: `#{@radiotechnology}`"
+        Util.warn "Possible radiotechnology types: `#{RADIOTECHNOLOGIES.join '`, `'}`"
       end
       @common_ims_spec = args.delete(:common_ims_spec)
       @release = args.delete(:release)
-      if args[:doctype].nil? then warn "[relaton-3gpp] doctype is missing"
+      if args[:doctype].nil? then Util.warn "doctype is missing"
       elsif !DOCTYPES.include?(args[:doctype])
-        warn "[relaton-3gpp] Unknown doctype: #{args[:doctype]}"
-        warn "[relaton-3gpp] Possible doctypes: #{DOCTYPES.join ' '}"
+        Util.warn "Unknown doctype: `#{args[:doctype]}`"
+        Util.warn "Possible doctypes: `#{DOCTYPES.join '`, `'}`"
       end
       if args[:docsubtype] && !DOCSUBTYPES.include?(args[:docsubtype])
-        warn "[relaton-3gpp] Unknown docsubtype: #{args[:docsubtype]}"
-        warn "[relaton-3gpp] Possible docsubtypes: #{DOCSUBTYPES.join ' '}"
+        Util.warn "Unknown docsubtype: `#{args[:docsubtype]}`"
+        Util.warn "Possible docsubtypes: `#{DOCSUBTYPES.join '`, `'}`"
       end
       super(**args)
     end
