@@ -23,16 +23,27 @@ Or install it yourself as:
 
 == Usage
 
-=== Search for a standard using keywords
+=== Configuration
+
+Configuration is optional. The available option is `logger` which is a `Logger` instance. By default, the logger is `Logger.new($stderr)` with `Logger::WARN` level. To change the logger level, use `Relaton3gpp.configure` block.
 
 [source,ruby]
 ----
 require 'relaton_3gpp'
 => true
 
+Relaton3gpp.configure do |config|
+  config.logger.level = Logger::DEBUG
+end
+----
+
+=== Search for a standard using keywords
+
+[source,ruby]
+----
 item = Relaton3gpp::Bibliography.get "3GPP TR 00.01U:UMTS/3.0.0"
-[relaton-3gpp] ("3GPP TR 00.01U:UMTS/3.0.0") fetching...
-[relaton-3gpp] ("3GPP TR 00.01U:UMTS/3.0.0") found 3GPP TR 00.01U:UMTS/3.0.0
+[relaton-3gpp] (3GPP TR 00.01U:UMTS/3.0.0) fetching...
+[relaton-3gpp] (3GPP TR 00.01U:UMTS/3.0.0) found `3GPP TR 00.01U:UMTS/3.0.0`
 => #<Relaton3gpp::BibliographicItem:0x00007f92d94264e0
 ...
 ----
