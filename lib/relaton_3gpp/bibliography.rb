@@ -34,7 +34,7 @@ module Relaton3gpp
     # @param opts [Hash] options
     # @return [RelatonBib::BibliographicItem]
     def get(ref, _year = nil, _opts = {})
-      Util.warn "(#{ref}) fetching..."
+      Util.warn "(#{ref}) fetching from Relaton repository ..."
       result = search(ref)
       unless result
         Util.warn "(#{ref}) not found"

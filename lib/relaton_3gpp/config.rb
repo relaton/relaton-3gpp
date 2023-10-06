@@ -5,6 +5,6 @@ module Relaton3gpp
   extend Config
 
   class Configuration < RelatonBib::Configuration
-    PROGNAME = "relaton-3ggp".freeze
+    PROGNAME = "relaton-3gpp".freeze
   end
 end

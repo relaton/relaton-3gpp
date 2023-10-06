@@ -26,10 +26,14 @@ RSpec.describe Relaton3gpp do
 
     it "render XML" do
       file = "spec/fixtures/bib.xml"
+      expect { bib }.to output(
+        %r{\[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sfetching\sfrom\sRelaton\srepository\s\.\.\.\n
+        \[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sfound\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
+      ).to_stderr
       xml = bib.to_xml
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
-      # expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
-      #   .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
+      expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
+        .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
       schema = Jing.new "grammars/relaton-3gpp-compile.rng"
       errors = schema.validate file
       expect(errors).to eq []
@@ -61,8 +65,8 @@ RSpec.describe Relaton3gpp do
   it "document not found" do
     VCR.use_cassette "3gpp_document_not_found" do
       expect do
-        expect(Relaton3gpp::Bibliography.get("not found")).to be_nil
-      end.to output(/not found/).to_stderr
+        expect(Relaton3gpp::Bibliography.get("3GPP 1234")).to be_nil
+      end.to output(/\[relaton-3gpp\] \(3GPP 1234\) not found/).to_stderr
     end
   end
 end
