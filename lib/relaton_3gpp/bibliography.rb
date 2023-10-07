@@ -37,7 +37,7 @@ module Relaton3gpp
       Util.warn "(#{ref}) Fetching from Relaton repository ..."
       result = search(ref)
       unless result
-        Util.warn "(#{ref}) Not found"
+        Util.warn "(#{ref}) Not found."
         return
       end
 
