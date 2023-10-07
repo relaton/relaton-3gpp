@@ -34,14 +34,14 @@ module Relaton3gpp
     # @param opts [Hash] options
     # @return [RelatonBib::BibliographicItem]
     def get(ref, _year = nil, _opts = {})
-      Util.warn "(#{ref}) fetching from Relaton repository ..."
+      Util.warn "(#{ref}) Fetching from Relaton repository ..."
       result = search(ref)
       unless result
-        Util.warn "(#{ref}) not found"
+        Util.warn "(#{ref}) Not found"
         return
       end
 
-      Util.warn "(#{ref}) found `#{result.docidentifier[0].id}`"
+      Util.warn "(#{ref}) Found: `#{result.docidentifier[0].id}`"
       result
     end
 

@@ -27,8 +27,8 @@ RSpec.describe Relaton3gpp do
     it "render XML" do
       file = "spec/fixtures/bib.xml"
       expect { bib }.to output(
-        %r{\[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sfetching\sfrom\sRelaton\srepository\s\.\.\.\n
-        \[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sfound\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
+        %r{\[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFetching\sfrom\sRelaton\srepository\s\.\.\.\n
+        \[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFound:\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
       ).to_stderr
       xml = bib.to_xml
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
@@ -66,7 +66,7 @@ RSpec.describe Relaton3gpp do
     VCR.use_cassette "3gpp_document_not_found" do
       expect do
         expect(Relaton3gpp::Bibliography.get("3GPP 1234")).to be_nil
-      end.to output(/\[relaton-3gpp\] \(3GPP 1234\) not found/).to_stderr
+      end.to output(/\[relaton-3gpp\] \(3GPP 1234\) Not found/).to_stderr
     end
   end
 end
