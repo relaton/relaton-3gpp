@@ -1,6 +1,5 @@
 module Relaton3gpp
   class BibliographicItem < RelatonBib::BibliographicItem
-    DOCTYPES = %w[TR TS].freeze
     DOCSUBTYPES = %w[spec release].freeze
     RADIOTECHNOLOGIES = %w[2G 3G LTE 5G].freeze
 
@@ -12,6 +11,7 @@ module Relaton3gpp
     # @param [Relaton3gpp::Release] release
     #
     def initialize(**args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      Util.warn "WARNING: Doctype is missing" if args[:type].nil?
       @radiotechnology = args.delete(:radiotechnology)
       if @radiotechnology && !RADIOTECHNOLOGIES.include?(@radiotechnology)
         Util.warn "WARNING: Unknown radiotechnology type: `#{@radiotechnology}`"
@@ -19,11 +19,6 @@ module Relaton3gpp
       end
       @common_ims_spec = args.delete(:common_ims_spec)
       @release = args.delete(:release)
-      if args[:doctype].nil? then Util.warn "WARNING: Doctype is missing"
-      elsif !DOCTYPES.include?(args[:doctype])
-        Util.warn "WARNING: Unknown doctype: `#{args[:doctype]}`"
-        Util.warn "WARNING: Possible doctypes: `#{DOCTYPES.join '`, `'}`"
-      end
       if args[:docsubtype] && !DOCSUBTYPES.include?(args[:docsubtype])
         Util.warn "WARNING: Unknown docsubtype: `#{args[:docsubtype]}`"
         Util.warn "WARNING: Possible docsubtypes: `#{DOCSUBTYPES.join '`, `'}`"
@@ -62,7 +57,7 @@ module Relaton3gpp
         if block_given? then yield b
         elsif opts[:bibdata] && has_ext_attrs?
           ext = b.ext do
-            b.doctype doctype if doctype
+            doctype&.to_xml b
             b.subdoctype subdoctype if subdoctype
             editorialgroup&.to_xml b
             ics.each { |i| i.to_xml b }

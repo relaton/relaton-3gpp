@@ -1,5 +1,5 @@
 ---
-schema-version: v1.2.4
+schema-version: v1.2.5
 id: TR00.01U-UMTS-3.0.0
 title:
 - content: Work programme for the standardization of Universal Mobile Telecommunications
@@ -59,7 +59,8 @@ docstatus:
     value: withdrawn
 place:
 - Sophia Antipolis Cedex, France
-doctype: TR
+doctype:
+  type: TR
 editorialgroup:
 - name: SMG5
   type: prime

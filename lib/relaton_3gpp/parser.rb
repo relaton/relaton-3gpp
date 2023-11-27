@@ -54,7 +54,7 @@ module Relaton3gpp
         docid: parse_docid,
         docnumber: number,
         date: parse_date,
-        doctype: @spec[:Type],
+        doctype: DocumentType.new(type: @spec[:Type]),
         editorialgroup: parse_editorialgroup,
         biblionote: parse_note,
         docstatus: parse_status,
@@ -92,7 +92,7 @@ module Relaton3gpp
     #
     # Parse abstract
     #
-    # @return [Array<RelatonBib::FormattedString>] 
+    # @return [Array<RelatonBib::FormattedString>]
     #
     def parse_abstract
       return [] unless @spec[:description]
