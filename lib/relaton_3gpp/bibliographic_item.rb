@@ -11,17 +11,17 @@ module Relaton3gpp
     # @param [Relaton3gpp::Release] release
     #
     def initialize(**args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-      Util.warn "WARNING: Doctype is missing" if args[:type].nil?
+      Util.warn "Doctype is missing" if args[:type].nil?
       @radiotechnology = args.delete(:radiotechnology)
       if @radiotechnology && !RADIOTECHNOLOGIES.include?(@radiotechnology)
-        Util.warn "WARNING: Unknown radiotechnology type: `#{@radiotechnology}`"
-        Util.warn "WARNING: Possible radiotechnology types: `#{RADIOTECHNOLOGIES.join '`, `'}`"
+        Util.warn "Unknown radiotechnology type: `#{@radiotechnology}`"
+        Util.warn "Possible radiotechnology types: `#{RADIOTECHNOLOGIES.join '`, `'}`"
       end
       @common_ims_spec = args.delete(:common_ims_spec)
       @release = args.delete(:release)
       if args[:docsubtype] && !DOCSUBTYPES.include?(args[:docsubtype])
-        Util.warn "WARNING: Unknown docsubtype: `#{args[:docsubtype]}`"
-        Util.warn "WARNING: Possible docsubtypes: `#{DOCSUBTYPES.join '`, `'}`"
+        Util.warn "Unknown docsubtype: `#{args[:docsubtype]}`"
+        Util.warn "Possible docsubtypes: `#{DOCSUBTYPES.join '`, `'}`"
       end
       super(**args)
     end

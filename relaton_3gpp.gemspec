@@ -2,7 +2,7 @@
 
 require_relative "lib/relaton_3gpp/version"
 
-Gem::Specification.new do |spec|
+Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.name          = "relaton-3gpp"
   spec.version       = Relaton3gpp::VERSION
   spec.authors       = ["Ribose Inc."]
@@ -36,9 +36,7 @@ Gem::Specification.new do |spec|
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
 
-  spec.add_dependency "mdb", "~> 0.5.0"
   spec.add_dependency "net-ftp", "~> 0.1.0"
   spec.add_dependency "relaton-bib", "~> 1.18.0"
   spec.add_dependency "relaton-index", "~> 0.2.0"
-  spec.add_dependency "rubyzip", "~> 2.3.0"
 end

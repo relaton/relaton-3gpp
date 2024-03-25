@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Relaton3gpp do
-  before { Relaton3gpp.instance_variable_set(:@configuration, nil) }
-
   it "has a version number" do
     expect(Relaton3gpp::VERSION).not_to be nil
   end
@@ -27,9 +25,9 @@ RSpec.describe Relaton3gpp do
     it "render XML" do
       file = "spec/fixtures/bib.xml"
       expect { bib }.to output(
-        %r{\[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFetching\sfrom\sRelaton\srepository\s\.\.\.\n
-        \[relaton-3gpp\]\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFound:\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
-      ).to_stderr
+        %r{\[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFetching\sfrom\sRelaton\srepository\s\.{3}\n
+        \[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFound:\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
+      ).to_stderr_from_any_process
       xml = bib.to_xml
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
       expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
@@ -66,7 +64,7 @@ RSpec.describe Relaton3gpp do
     VCR.use_cassette "3gpp_document_not_found" do
       expect do
         expect(Relaton3gpp::Bibliography.get("3GPP 1234")).to be_nil
-      end.to output(/\[relaton-3gpp\] \(3GPP 1234\) Not found/).to_stderr
+      end.to output(/\[relaton-3gpp\] INFO: \(3GPP 1234\) Not found/).to_stderr_from_any_process
     end
   end
 end

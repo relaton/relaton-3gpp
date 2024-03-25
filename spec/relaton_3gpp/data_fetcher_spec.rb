@@ -27,7 +27,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
           f = double("ftp")
           expect(f).to receive(:resume=).with(true).at_least(:once)
           expect(f).to receive(:login).at_least(:once)
-          expect(f).to receive(:chdir).with("/Information/Databases/Spec_Status/").at_least(:once)
+          expect(f).to receive(:chdir).with("/Information/Databases/").at_least(:once)
           f
         end
 
@@ -37,8 +37,8 @@ RSpec.describe Relaton3gpp::DataFetcher do
 
         context do
           before do
-            expect(ftp).to receive(:list).with("*.zip").and_return(
-              ["11-22-21  02:39PM            459946195 file.zip"],
+            expect(ftp).to receive(:list).with("*.csv").and_return(
+              ["11-22-21  02:39PM            459946195 file.csv"],
             ).at_least(:once)
           end
 
@@ -46,28 +46,29 @@ RSpec.describe Relaton3gpp::DataFetcher do
             expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
             allow(File).to receive(:exist?).and_call_original
             expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
-              { "file" => "file.zip", "date" => "2021-11-22T14:39:00+00:00" },
+              { "file" => "file.csv", "date" => "2021-11-22T14:39:00+00:00" },
             )
             expect(subject.get_file(false)).to be_nil
           end
 
           it "download fist time" do
             expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(false)
-            expect(ftp).to receive(:getbinaryfile).with("file.zip")
-            expect(subject.get_file(false)).to eq "file.zip"
+            expect(ftp).to receive(:get).with("file.csv", /3gpp\.csv$/)
+            expect(subject.get_file(false)).to match(/3gpp.csv$/)
           end
 
           it "download update" do
             expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
             expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return(
-              { "file" => "file.zip", "date" => "2021-11-23T14:39:00+00:00" },
+              { "file" => "file.csv", "date" => "2021-11-23T14:39:00+00:00" },
             )
-            expect(ftp).to receive(:getbinaryfile).with("file.zip")
-            expect(subject.get_file(false)).to eq "file.zip"
+            expect(ftp).to receive(:get).with("file.csv", /3gpp\.csv$/)
+            expect(subject.get_file(false)).to match(/3gpp.csv$/)
           end
 
           it "retry file downloading from FTP" do
-            expect(ftp).to receive(:getbinaryfile).with("file.zip").and_raise(Net::ReadTimeout).exactly(5).times
+            expect(ftp).to receive(:get).with("file.csv", /3gpp\.csv$/)
+              .and_raise(Net::ReadTimeout).exactly(5).times
             expect do
               subject.get_file false
             end.to raise_error(Net::ReadTimeout)
@@ -75,64 +76,71 @@ RSpec.describe Relaton3gpp::DataFetcher do
 
           it "download if current date is empty" do
             expect(File).to receive(:exist?).with(Relaton3gpp::DataFetcher::CURRENT).and_return(true)
-            current = { "file" => "file.zip", "date" => "" }
+            current = { "file" => "file.csv", "date" => "" }
             expect(YAML).to receive(:load_file).with(Relaton3gpp::DataFetcher::CURRENT).and_return current
-            expect(ftp).to receive(:getbinaryfile).with("file.zip")
-            expect(subject.get_file(false)).to eq "file.zip"
+            expect(ftp).to receive(:get).with("file.csv", /3gpp\.csv$/)
+            expect(subject.get_file(false)).to match(/3gpp.csv$/)
           end
         end
 
         it "return nil if no files" do
-          expect(ftp).to receive(:list).with("*.zip").and_return([])
+          expect(ftp).to receive(:list).with("*.csv").and_return([])
           expect(subject.get_file(false)).to be_nil
         end
       end
 
-      it "fetch" do
-        expect(subject).to receive(:get_file).and_return("file.zip")
-        expect(subject.index).to receive(:remove_all)
-        zip = double("zip")
-        input_stream = double("input_stream", read: "data")
-        entry = double("entry", get_input_stream: input_stream)
-        entries = double("entries", first: entry)
-        expect(zip).to receive(:glob).with("status_smg_3GPP.mdb").and_return(entries)
-        expect(Zip::File).to receive(:open).with("file.zip").and_yield(zip)
-        file = double("file")
-        expect(file).to receive(:write).with("data")
-        expect(File).to receive(:open).with("status_smg_3GPP.mdb", "wb").and_yield(file)
-        dbs = {
-          "2001-04-25_schedule" => [spec: "00.00"],
-          "Specs_GSM+3G" => :specs,
-          "Specs_GSM+3G_release-info" => :specrels,
-          "Releases" => :releases,
-          "temp-status" => :tstatus,
-        }
-        expect(Mdb).to receive(:open).with("status_smg_3GPP.mdb").and_return dbs
-        expect(FileUtils).to receive(:rm_f).with("dir/*")
-        expect(subject).to receive(:fetch_doc).with(
-          { spec: "00.00" }, :specs, :specrels, :releases, :tstatus
-        )
-        expect(File).to receive(:write).with(Relaton3gpp::DataFetcher::CURRENT,
-                                             kind_of(String), encoding: "UTF-8")
-        expect(subject.index).to receive(:save)
-        subject.fetch true
-      end
+      context "fetch" do
+        it "skip if no file name" do
+          expect(subject).to receive(:get_file).and_return nil
+          expect(File).not_to receive(:exist?)
+          subject.fetch true
+        end
 
-      it "successfully" do
-        row = { spec: "00.00" }
-        expect(Relaton3gpp::Parser).to receive(:parse).with(
-          row, :specs, :specrels, :releases, :tstatus
-        ).and_return :doc
-        expect(subject).to receive(:save_doc).with(:doc)
-        subject.fetch_doc row, :specs, :specrels, :releases, :tstatus
-      end
+        context do
+          before { expect(subject).to receive(:get_file).and_return "file.csv" }
 
-      it "warn when error" do
-        row = { spec: "00.00", release: "R00", MAJOR_VERSION_NB: "1",
-                TECHNICAL_VERSION_NB: "2", EDITORIAL_VERSION_NB: "3" }
-        expect(Relaton3gpp::Parser).to receive(:parse).and_raise(StandardError)
-        expect { subject.fetch_doc(row, :specs, :specrels, :releases, :tstatus) }
-          .to output(/Error: StandardError\nPubID: 00\.00:R00\/1\.2\.3/m).to_stderr
+          it "skip if file doesn't exist" do
+            expect(File).to receive(:exist?).with("file.csv").and_return false
+            expect(File).not_to receive(:size).with("file.csv")
+            subject.fetch true
+          end
+
+          context do
+            before do
+             expect(File).to receive(:exist?).with("file.csv").and_return true
+            end
+
+            it "skip if file size is too small" do
+              expect(File).to receive(:size).with("file.csv").and_return 1_000_000
+              expect(CSV).not_to receive(:open)
+              subject.fetch true
+            end
+
+            context "successfully" do
+              before do
+                expect(File).to receive(:size).with("file.csv").and_return 25_000_000
+                expect(CSV).to receive(:open)
+                  .with("file.csv", "r:bom|utf-8", headers: true, col_sep: ";").and_return [:row]
+                expect(Relaton3gpp::Parser).to receive(:parse).with(:row).and_return :doc
+                expect(subject).to receive(:save_doc).with(:doc)
+                expect(File).to receive(:write).with("current.yaml", anything, encoding: "UTF-8")
+                expect(subject.index).to receive(:save)
+              end
+
+              it "renewal" do
+                expect(FileUtils).to receive(:rm_f).with("dir/*")
+                expect(subject.index).to receive(:remove_all)
+                subject.fetch true
+              end
+
+              it "update" do
+                expect(FileUtils).not_to receive(:rm_f).with("dir/*")
+                expect(subject.index).not_to receive(:remove_all)
+                subject.fetch false
+              end
+            end
+          end
+        end
       end
     end
 
@@ -180,7 +188,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
           .with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
         expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.xml")
         expect { subject.save_doc bib }
-          .to output(/File dir\/BIB.xml already exists/).to_stderr
+          .to output(/File dir\/BIB.xml already exists/).to_stderr_from_any_process
       end
     end
   end
