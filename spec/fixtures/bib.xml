@@ -1,6 +1,6 @@
-<bibitem id="TR00.01U-UMTS-3.0.0" type="standard" schema-version="v1.2.8">
+<bibitem id="TR00.01U-UMTS-3.0.0" type="standard" schema-version="v1.3.0">
   <fetched>2023-05-27</fetched>
-  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+  <title type="main">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
   <uri type="src">http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
   <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
   <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>

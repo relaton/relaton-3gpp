@@ -57,7 +57,7 @@ module Relaton3gpp
     #
     # @return [Hash]
     #
-    def to_hash
+    def to_h
       hash = {}
       instance_variables.each do |var|
         unless instance_variable_get(var).nil?

@@ -250,7 +250,7 @@ module Relaton3gpp
         name: "3rd Generation Partnership Project", abbreviation: "3GPP", contact: [address],
       )
       roles = [{ type: "author" }, { type: "publisher" }]
-      contribs = [RelatonBib::ContributionInfo.new(entity: org, role: roles)]
+      contribs = [RelatonBib::Contributor.new(entity: org, role: roles)]
       return contribs unless @tstatus && @tstatus[:rapporteur]
 
       aff = []
@@ -262,7 +262,7 @@ module Relaton3gpp
       end
       person = RelatonBib::Person.new(name: name, affiliation: aff)
       role = { type: "author" }
-      contribs << RelatonBib::ContributionInfo.new(entity: person, role: [role])
+      contribs << RelatonBib::Contributor.new(entity: person, role: [role])
     end
   end
 end

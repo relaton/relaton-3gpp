@@ -138,7 +138,7 @@ module Relaton3gpp
 
       c = case @format
           when "xml" then bib.to_xml(bibdata: true)
-          when "yaml" then bib.to_hash.to_yaml
+          when "yaml" then bib.to_h.to_yaml
           else bib.send("to_#{@format}")
           end
       file = file_name(bib)

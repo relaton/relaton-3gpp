@@ -52,7 +52,7 @@ RSpec.describe Relaton3gpp do
 
     it "render YAML" do
       file = "spec/fixtures/bib.yaml"
-      hash = bib.to_hash
+      hash = bib.to_h
       expect(hash["fetched"]).to match(/^\d{4}-\d{2}-\d{2}$/)
       hash.delete("fetched")
       File.write file, hash.to_yaml, encoding: "UTF-8"
