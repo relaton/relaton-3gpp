@@ -80,11 +80,11 @@ module Relaton3gpp
     #
     # @return [Hash
     #
-    def to_hash
+    def to_h
       hash = super
       hash["radiotechnology"] = @radiotechnology if @radiotechnology
       hash["common-ims-spec"] = @common_ims_spec if @common_ims_spec
-      hash["release"] = @release.to_hash if @release
+      hash["release"] = @release.to_h if @release
       hash
     end
   end

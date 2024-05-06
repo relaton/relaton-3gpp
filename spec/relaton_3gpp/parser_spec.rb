@@ -76,7 +76,7 @@ RSpec.describe Relaton3gpp::Parser do
       title = subject.parse_title
       expect(title).to be_instance_of RelatonBib::TypedTitleStringCollection
       expect(title.first).to be_instance_of RelatonBib::TypedTitleString
-      expect(title.first.title.content).to eq "Title"
+      expect(title.first.to_s).to eq "Title"
     end
 
     it "parse link" do
@@ -127,7 +127,7 @@ RSpec.describe Relaton3gpp::Parser do
       expect(note.size).to eq 2
       expect(note.first).to be_instance_of RelatonBib::BiblioNote
       expect(note.first.type).to eq "remark"
-      expect(note.first.content).to eq "Remarks"
+      expect(note.first.to_s).to eq "Remarks"
     end
 
     context "parse status" do
@@ -189,7 +189,7 @@ RSpec.describe Relaton3gpp::Parser do
     it "parse contributor" do
       contrib = subject.parse_contributor
       expect(contrib).to be_instance_of Array
-      expect(contrib[0]).to be_instance_of RelatonBib::ContributionInfo
+      expect(contrib[0]).to be_instance_of RelatonBib::Contributor
       expect(contrib[0].role[0].type).to eq "author"
       expect(contrib[0].role[1].type).to eq "publisher"
       expect(contrib[0].entity).to be_instance_of RelatonBib::Organization

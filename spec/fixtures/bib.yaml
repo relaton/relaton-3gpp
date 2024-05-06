@@ -1,10 +1,9 @@
 ---
-schema-version: v1.2.8
+schema-version: v1.3.0
 id: TR00.01U-UMTS-3.0.0
 title:
 - content: Work programme for the standardization of Universal Mobile Telecommunications
     System (UMTS)
-  format: text/plain
   type: main
 link:
 - content: http://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip

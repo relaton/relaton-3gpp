@@ -165,7 +165,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
         subject.instance_variable_set(:@format, "yaml")
         subject.instance_variable_set(:@ext, "yaml")
         bib = double("bib", docnumber: "bib")
-        expect(bib).to receive(:to_hash).and_return({ id: 123 })
+        expect(bib).to receive(:to_h).and_return({ id: 123 })
         expect(File).to receive(:write)
           .with("dir/BIB.yaml", /id: 123/, encoding: "UTF-8")
         expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.yaml")
