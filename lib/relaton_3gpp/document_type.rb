@@ -10,8 +10,8 @@ module Relaton3gpp
     # @param type [String]
     def check(type)
       unless DOCTYPES.include? type
-        Util.warn "WARNING: Unknown doctype: `#{type}`"
-        Util.warn "WARNING: Possible doctypes: `#{DOCTYPES.join '`, `'}`"
+        Util.warn "Unknown doctype: `#{type}`"
+        Util.warn "Possible doctypes: `#{DOCTYPES.join '`, `'}`"
       end
     end
   end

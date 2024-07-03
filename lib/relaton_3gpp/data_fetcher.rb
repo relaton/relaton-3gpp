@@ -10,8 +10,7 @@ module Relaton3gpp
     def initialize(output, format)
       require "fileutils"
       require "net/ftp"
-      require "zip"
-      require "mdb"
+      require "csv"
 
       @output = output
       @format = format
@@ -47,25 +46,14 @@ module Relaton3gpp
     #
     def fetch(renewal) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       file = get_file renewal
-      return unless file
+      return unless file && File.exist?(file) && File.size(file) > 20_000_000
 
-      Zip::File.open(file) do |zip_file|
-        enntry = zip_file.glob("status_smg_3GPP.mdb").first
-        File.open("status_smg_3GPP.mdb", "wb") do |f|
-          f.write enntry.get_input_stream.read
-        end
-      end
-      dbs = Mdb.open "status_smg_3GPP.mdb"
-      specs = dbs["Specs_GSM+3G"]
-      specrels = dbs["Specs_GSM+3G_release-info"]
-      releases = dbs["Releases"]
-      tstatus = dbs["temp-status"]
-      if renewal && dbs["2001-04-25_schedule"].any?
+      if renewal
         FileUtils.rm_f File.join(@output, "/*") # if renewal && dbs["2001-04-25_schedule"].any?
         index.remove_all # if renewal
       end
-      dbs["2001-04-25_schedule"].each do |row|
-        fetch_doc row, specs, specrels, releases, tstatus
+      CSV.open(file, "r:bom|utf-8", headers: true, col_sep: ";").each do |row|
+        save_doc Parser.parse(row)
       end
       File.write CURRENT, @current.to_yaml, encoding: "UTF-8"
       index.save
@@ -86,17 +74,18 @@ module Relaton3gpp
         ftp = Net::FTP.new("www.3gpp.org")
         ftp.resume = true
         ftp.login
-        ftp.chdir "/Information/Databases/Spec_Status/"
-        file_path = ftp.list("*.zip").first
+        ftp.chdir "/Information/Databases/"
+        file_path = ftp.list("*.csv").first
         return unless file_path
 
         d, t, _, file = file_path.split
-        unless renewal
-          dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
-          return if file == @current["file"] && !@current["date"].empty? && dt == DateTime.parse(@current["date"])
+        dt = DateTime.strptime("#{d} #{t}", "%m-%d-%y %I:%M%p")
+        if !renewal && file == @current["file"] && !@current["date"].empty? && dt == DateTime.parse(@current["date"])
+          return
         end
 
-        ftp.getbinaryfile file
+        tmp_file = File.join Dir.tmpdir, "3gpp.csv"
+        ftp.get(file, tmp_file)
       rescue Net::ReadTimeout => e
         n += 1
         retry if n < 5
@@ -104,7 +93,7 @@ module Relaton3gpp
       end
       @current["file"] = file
       @current["date"] = dt.to_s
-      file
+      tmp_file
     end
 
     #
@@ -118,15 +107,15 @@ module Relaton3gpp
     #
     # @return [Relaton3gpp::BibliographicItem, nil] bibliographic item
     #
-    def fetch_doc(row, specs, specrels, releases, tstatus)
-      doc = Parser.parse row, specs, specrels, releases, tstatus
-      save_doc doc
-    rescue StandardError => e
-      warn "Error: #{e.message}"
-      warn "PubID: #{row[:spec]}:#{row[:release]}/#{row[:MAJOR_VERSION_NB]}."\
-           "#{row[:TECHNICAL_VERSION_NB]}.#{row[:EDITORIAL_VERSION_NB]}"
-      warn e.backtrace[0..5].join("\n")
-    end
+    # def fetch_doc(row, specs, specrels, releases, tstatus)
+    #   doc = Parser.parse row, specs, specrels, releases, tstatus
+    #   save_doc doc
+    # rescue StandardError => e
+    #   warn "Error: #{e.message}"
+    #   warn "PubID: #{row[:spec]}:#{row[:release]}/#{row[:MAJOR_VERSION_NB]}."\
+    #        "#{row[:TECHNICAL_VERSION_NB]}.#{row[:EDITORIAL_VERSION_NB]}"
+    #   warn e.backtrace[0..5].join("\n")
+    # end
 
     #
     # Save document to file
@@ -143,7 +132,7 @@ module Relaton3gpp
           end
       file = file_name(bib)
       if @files.include? file
-        warn "File #{file} already exists. Document: #{bib.docnumber}"
+        Util.warn "File #{file} already exists. Document: #{bib.docnumber}"
       else
         @files << file
       end
