@@ -37,6 +37,6 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   # guide at: https://bundler.io/guides/creating_gem.html
 
   spec.add_dependency "net-ftp", "~> 0.1.0"
-  spec.add_dependency "relaton-bib", "~> 1.18.0"
+  spec.add_dependency "relaton-bib", "~> 1.19.0"
   spec.add_dependency "relaton-index", "~> 0.2.0"
 end
