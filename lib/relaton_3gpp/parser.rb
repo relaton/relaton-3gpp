@@ -109,7 +109,7 @@ module Relaton3gpp
 
     def release
       @release ||=  case @row["WPM Code 2G"]
-                    when /Release_(\d+)/ then "R#{$1}"
+                    when /Release_(\d+)/ then "REL-#{$1}"
                     when /PH(\d+)/ then "Ph#{$1}"
                     else @row["Release"]
                     end
@@ -254,7 +254,7 @@ module Relaton3gpp
         aff << RelatonBib::Affiliation.new(organization: org)
       end
       surname = RelatonBib::LocalizedString.new @row["Last Name"], "en", "Latn"
-      forename = RelatonBib::LocalizedString.new @row["First Name"], "en", "Latn"
+      forename = RelatonBib::Forename.new content: @row["First Name"], language: ["en"], script: ["Latn"]
       name = RelatonBib::FullName.new(surname: surname, forename: [forename])
       person = RelatonBib::Person.new(name: name, affiliation: aff)
       role = { type: "author" }

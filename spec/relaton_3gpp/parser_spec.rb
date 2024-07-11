@@ -87,7 +87,7 @@ RSpec.describe Relaton3gpp::Parser do
 
       it "number" do
         row["WPM Code 2G"] = "GSM_Release_99"
-        expect(subject.release).to eq "R99"
+        expect(subject.release).to eq "REL-99"
       end
 
       it "phase" do

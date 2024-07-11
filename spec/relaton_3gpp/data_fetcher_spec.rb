@@ -107,7 +107,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
 
           context do
             before do
-             expect(File).to receive(:exist?).with("file.csv").and_return true
+              expect(File).to receive(:exist?).with("file.csv").and_return true
             end
 
             it "skip if file size is too small" do
@@ -120,7 +120,7 @@ RSpec.describe Relaton3gpp::DataFetcher do
               before do
                 expect(File).to receive(:size).with("file.csv").and_return 25_000_000
                 expect(CSV).to receive(:open)
-                  .with("file.csv", "r:bom|utf-8", headers: true, col_sep: ";").and_return [:row]
+                  .with("file.csv", "r:bom|utf-8", headers: true).and_return [:row]
                 expect(Relaton3gpp::Parser).to receive(:parse).with(:row).and_return :doc
                 expect(subject).to receive(:save_doc).with(:doc)
                 expect(File).to receive(:write).with("current.yaml", anything, encoding: "UTF-8")
@@ -150,45 +150,238 @@ RSpec.describe Relaton3gpp::DataFetcher do
         subject.save_doc nil
       end
 
-      it "bibxml" do
+      it "write doc" do
         bib = double("bib", docnumber: "bib")
         expect(bib).to receive(:to_bibxml).and_return("<xml/>")
-        expect(File).to receive(:write)
-          .with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
+        expect(File).to receive(:write).with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
         expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.xml")
         subject.save_doc bib
       end
 
-      it "xml" do
-        subject.instance_variable_set(:@format, "xml")
+      it "warn when file exists and the doc is not transposed or has addidional cntributor" do
+        subject.instance_variable_set(:@files, ["dir/BIB.xml"])
         bib = double("bib", docnumber: "bib")
+        expect(subject).to receive(:merge_duplication).with(bib, "dir/BIB.xml").and_return nil
+        expect(File).not_to receive(:write)
+        expect(subject.index).not_to receive(:add_or_update)
+        expect { subject.save_doc bib }
+          .to output(/File dir\/BIB.xml already exists/).to_stderr_from_any_process
+      end
+    end
+
+    context "serialise" do
+      it "xml" do
+        bib = double("bib")
+        subject.instance_variable_set(:@format, "xml")
         expect(bib).to receive(:to_xml).with(bibdata: true).and_return("<xml/>")
-        expect(File).to receive(:write)
-          .with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
-        expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.xml")
-        subject.save_doc bib
+        expect(subject.send(:serialise, bib)).to eq "<xml/>"
       end
 
       it "yaml" do
+        bib = double("bib")
         subject.instance_variable_set(:@format, "yaml")
-        subject.instance_variable_set(:@ext, "yaml")
-        bib = double("bib", docnumber: "bib")
         expect(bib).to receive(:to_hash).and_return({ id: 123 })
-        expect(File).to receive(:write)
-          .with("dir/BIB.yaml", /id: 123/, encoding: "UTF-8")
-        expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.yaml")
-        subject.save_doc bib
+        expect(subject.send(:serialise, bib)).to match(/id: 123/)
       end
 
-      it "warn when file exists" do
-        subject.instance_variable_set(:@files, ["dir/BIB.xml"])
-        bib = double("bib", docnumber: "bib")
-        expect(bib).to receive(:to_bibxml).and_return("<xml/>")
-        expect(File).to receive(:write)
-          .with("dir/BIB.xml", "<xml/>", encoding: "UTF-8")
-        expect(subject.index).to receive(:add_or_update).with("bib", "dir/BIB.xml")
-        expect { subject.save_doc bib }
-          .to output(/File dir\/BIB.xml already exists/).to_stderr_from_any_process
+      it "other" do
+        bib = double("bib")
+        expect(bib).to receive(:to_bibxml).and_return("<bibxm/>")
+        expect(subject.send(:serialise, bib)).to eq "<bibxm/>"
+      end
+    end
+
+    context "merge duplication" do
+      before do
+        expect(YAML).to receive(:load_file).with(:file).and_return :hash
+        expect(Relaton3gpp::BibliographicItem).to receive(:from_hash).with(:hash).and_return :bib2
+      end
+
+      it "has changed link" do
+        expect(subject).to receive(:update_link).with(:bib, :bib2).and_return true
+        expect(subject).to receive(:transposed_relation).with(:bib, :bib2).and_return [:bib1, :bib2, false]
+        expect(subject).to receive(:add_contributor).with(:bib1, :bib2).and_return false
+        expect(subject.send(:merge_duplication, :bib, :file)).to eq :bib1
+      end
+
+      it "has changed transposed relation" do
+        expect(subject).to receive(:update_link).with(:bib, :bib2).and_return false
+        expect(subject).to receive(:transposed_relation).with(:bib, :bib2).and_return [:bib1, :bib2, true]
+        expect(subject).to receive(:add_contributor).with(:bib1, :bib2).and_return false
+        expect(subject.send(:merge_duplication, :bib, :file)).to eq :bib1
+      end
+
+      it "has changed contributor" do
+        expect(subject).to receive(:update_link).with(:bib, :bib2).and_return false
+        expect(subject).to receive(:transposed_relation).with(:bib, :bib2).and_return [:bib1, :bib2, false]
+        expect(subject).to receive(:add_contributor).with(:bib1, :bib2).and_return true
+        expect(subject.send(:merge_duplication, :bib, :file)).to eq :bib1
+      end
+    end
+
+    context "update link" do
+      let(:bib_with_link) { Relaton3gpp::BibliographicItem.new link: ["link"] }
+      let(:bib_without_link) { Relaton3gpp::BibliographicItem.new link: [] }
+
+      it "update original link" do
+        expect(subject.send(:update_link, bib_with_link, bib_without_link)).to be true
+        expect(bib_with_link.link.size).to eq 1
+      end
+
+      it "update new link" do
+        expect(subject.send(:update_link, bib_without_link, bib_with_link)).to be true
+        expect(bib_without_link.link.size).to eq 1
+      end
+
+      context "no changes" do
+        it "both has link" do
+          expect(subject.send(:update_link, bib_with_link, bib_with_link)).to be false
+        end
+
+        it "both empty" do
+          expect(subject.send(:update_link, bib_without_link, bib_without_link)).to be false
+        end
+      end
+    end
+
+    context "transposed relation" do
+      it "no dates" do
+        bib = double("bib", date: [])
+        bib2 = double("bib2", date: [])
+        expect(subject.send(:transposed_relation, bib, bib2)).to eq [bib, bib2, false]
+      end
+
+      it "new doc has no date" do
+        bib = double("bib", date: [])
+        bib2 = double("bib2", date: [double("date", on: Date.today)])
+        expect(subject.send(:transposed_relation, bib, bib2)).to eq [bib2, bib, true]
+      end
+
+      it "existing doc has no date" do
+        bib = double("bib", date: [double("date", on: Date.today)])
+        bib2 = double("bib2", date: [])
+        expect(subject.send(:transposed_relation, bib, bib2)).to eq [bib, bib2, false]
+      end
+
+      it "both have dates" do
+        bib = double("bib", date: [double("date", on: Date.today)])
+        bib2 = double("bib2", date: [double("date", on: Date.today)])
+        expect(subject).to receive(:check_transposed_date).with(bib, bib2).and_return [bib, bib2, false]
+        expect(subject.transposed_relation(bib, bib2)).to eq [bib, bib2, false]
+      end
+    end
+
+    context "check transposed date" do
+      it "new doc is older" do
+        bib = double("bib", date: [double("date", on: Date.today - 1)])
+        bib2 = double("item", date: [double("date", on: Date.today)])
+        expect(subject).to receive(:add_transposed_relation).with(bib, bib2)
+        expect(subject.check_transposed_date(bib, bib2)).to eq [bib, bib2, true]
+      end
+
+      it "new doc is newer" do
+        bib = double("bib", date: [double("date", on: Date.today)])
+        bib2 = double("item", date: [double("date", on: Date.today - 1)])
+        expect(subject).to receive(:add_transposed_relation).with(bib2, bib)
+        expect(subject.check_transposed_date(bib, bib2)).to eq [bib2, bib, true]
+      end
+
+      it "dates are equal" do
+        bib = double("bib", date: [double("date", on: Date.today)])
+        bib2 = double("item", date: [double("date", on: Date.today)])
+        expect(subject.check_transposed_date(bib, bib2)).to eq [bib, bib2, false]
+      end
+    end
+
+    it "add transposed relation" do
+      bib = Relaton3gpp::BibliographicItem.new
+      bib2 = Relaton3gpp::BibliographicItem.new
+      subject.add_transposed_relation(bib, bib2)
+      expect(bib.relation.first.bibitem).to eq bib2
+    end
+
+    context "add contributor" do
+      it "new doc has a different contributor" do
+        surname = RelatonBib::LocalizedString.new "Doe"
+        forename = RelatonBib::Forename.new content: "John"
+        name = RelatonBib::FullName.new surname: surname, forename: [forename]
+        person = RelatonBib::Person.new name: name
+        contrib = RelatonBib::ContributionInfo.new entity: person
+        bib = Relaton3gpp::BibliographicItem.new contributor: [contrib]
+
+        surname2 = RelatonBib::LocalizedString.new "Smith"
+        forename2 = RelatonBib::Forename.new content: "John"
+        name2 = RelatonBib::FullName.new surname: surname2, forename: [forename2]
+        person2 = RelatonBib::Person.new name: name2
+        contrib2 = RelatonBib::ContributionInfo.new entity: person2
+        bib2 = Relaton3gpp::BibliographicItem.new contributor: [contrib2]
+
+        expect(subject.add_contributor(bib, bib2)).to be true
+        expect(bib.contributor.size).to eq 2
+        expect(bib.contributor[0]).to be contrib
+        expect(bib.contributor[1]).to be contrib2
+      end
+
+      it "new doc has the same contributor with different affiliation" do
+        surname = RelatonBib::LocalizedString.new "Doe"
+        forename = RelatonBib::Forename.new content: "John"
+        name = RelatonBib::FullName.new surname: surname, forename: [forename]
+        person = RelatonBib::Person.new name: name
+        contrib = RelatonBib::ContributionInfo.new entity: person
+        bib = Relaton3gpp::BibliographicItem.new contributor: [contrib]
+
+        org = RelatonBib::Organization.new name: "Org"
+        aff = RelatonBib::Affiliation.new organization: org
+        surname2 = RelatonBib::LocalizedString.new "Doe"
+        forename2 = RelatonBib::Forename.new content: "John"
+        name2 = RelatonBib::FullName.new surname: surname2, forename: [forename2]
+        person2 = RelatonBib::Person.new name: name2, affiliation: [aff]
+        contrib2 = RelatonBib::ContributionInfo.new entity: person2
+        bib2 = Relaton3gpp::BibliographicItem.new contributor: [contrib2]
+
+        expect(subject.add_contributor(bib, bib2)).to be true
+        expect(bib.contributor.size).to eq 1
+        expect(bib.contributor[0]).to be contrib
+        expect(bib.contributor[0].entity.affiliation.size).to eq 1
+      end
+
+      it "new doc has the same contributor with the same affiliation" do
+        surname = RelatonBib::LocalizedString.new "Doe"
+        forename = RelatonBib::Forename.new content: "John"
+        name = RelatonBib::FullName.new surname: surname, forename: [forename]
+        org = RelatonBib::Organization.new name: "Org"
+        aff = RelatonBib::Affiliation.new organization: org
+        person = RelatonBib::Person.new name: name, affiliation: [aff]
+        contrib = RelatonBib::ContributionInfo.new entity: person
+        bib = Relaton3gpp::BibliographicItem.new contributor: [contrib]
+
+        surname2 = RelatonBib::LocalizedString.new "Doe"
+        forename2 = RelatonBib::Forename.new content: "John"
+        name2 = RelatonBib::FullName.new surname: surname2, forename: [forename2]
+        org2 = RelatonBib::Organization.new name: "Org"
+        aff2 = RelatonBib::Affiliation.new organization: org2
+        person2 = RelatonBib::Person.new name: name2, affiliation: [aff2]
+        contrib2 = RelatonBib::ContributionInfo.new entity: person2
+        bib2 = Relaton3gpp::BibliographicItem.new contributor: [contrib2]
+
+        expect(subject.add_contributor(bib, bib2)).to be false
+        expect(bib.contributor.size).to eq 1
+        expect(bib.contributor[0]).to be contrib
+        expect(bib.contributor[0].entity.affiliation.size).to eq 1
+      end
+
+      it "skip organization" do
+        org = RelatonBib::Organization.new name: "Org"
+        contrib = RelatonBib::ContributionInfo.new entity: org
+        bib = Relaton3gpp::BibliographicItem.new contributor: [contrib]
+
+        org2 = RelatonBib::Organization.new name: "Org"
+        contrib2 = RelatonBib::ContributionInfo.new entity: org2
+        bib2 = Relaton3gpp::BibliographicItem.new contributor: [contrib2]
+
+        expect(subject.add_contributor(bib, bib2)).to be false
+        expect(bib.contributor.size).to eq 1
+        expect(bib.contributor[0]).to be contrib
       end
     end
   end
