@@ -56,6 +56,8 @@ contributor:
         - content: PHILIPS CONSUMER COMMUNICATION
   role:
   - type: author
+version:
+- draft: 3.0.0
 revdate: '1994-11-18'
 language:
 - en
