@@ -40,6 +40,7 @@ module Relaton3gpp
         date: parse_date,
         doctype: parse_doctype,
         editorialgroup: parse_editorialgroup,
+        version: parse_version,
         # biblionote: parse_note,
         # docstatus: parse_status,
         radiotechnology: parse_radiotechnology,
@@ -100,7 +101,15 @@ module Relaton3gpp
     def number
       num = "#{doctype_abbr} #{@row[0]}"
       num += ":#{release}" if release
-      "#{num}/#{@row['Version']}"
+      "#{num}/#{version}"
+    end
+
+    def version
+      @row["Version"]
+    end
+
+    def parse_version
+      [RelatonBib::BibliographicItem::Version.new(nil, version)]
     end
 
     def doctype_abbr
@@ -199,11 +208,11 @@ module Relaton3gpp
     # @return [String] radio technology
     #
     def parse_radiotechnology
-      case @row[:"WPM Code 3G"]
+      case @row["WPM Code 3G"]
       when /5G/ then "5G"
       when /4G/ then "LTE"
       when /3G/ then "3G"
-      else @row[:"WPM Code 2G"] && "2G"
+      else @row["WPM Code 2G"] && "2G"
       end
     end
 

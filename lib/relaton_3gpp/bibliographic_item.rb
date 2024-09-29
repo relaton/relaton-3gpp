@@ -3,12 +3,15 @@ module Relaton3gpp
     DOCSUBTYPES = %w[spec release].freeze
     RADIOTECHNOLOGIES = %w[2G 3G LTE 5G].freeze
 
+    # @return [String, nil]
+    attr_reader :radiotechnology, :release
+
     #
     # Initialize bibliographic item.
     #
-    # @param [String] radiotechnology
+    # @param [String, nil] radiotechnology
     # @param [Boolean] common_ims_spec
-    # @param [Relaton3gpp::Release] release
+    # @param [Relaton3gpp::Release, nil] release
     #
     def initialize(**args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       Util.warn "Doctype is missing" if args[:type].nil?
@@ -61,9 +64,9 @@ module Relaton3gpp
             b.subdoctype subdoctype if subdoctype
             editorialgroup&.to_xml b
             ics.each { |i| i.to_xml b }
-            b.radiotechnology @radiotechnology if @radiotechnology
+            b.radiotechnology radiotechnology if radiotechnology
             b.send :"common-ims-spec", @common_ims_spec if @common_ims_spec
-            @release&.to_xml b
+            release&.to_xml b
           end
           ext["schema-version"] = ext_schema unless opts[:embedded]
         end
@@ -71,8 +74,8 @@ module Relaton3gpp
     end
 
     def has_ext_attrs? # rubocop:disable Metrics/CyclomaticComplexity
-      doctype || subdoctype || editorialgroup || ics.any? || @radiotechnology ||
-        @common_ims_spec || @release
+      doctype || subdoctype || editorialgroup || ics.any? || radiotechnology ||
+        @common_ims_spec || release
     end
 
     #
@@ -82,9 +85,9 @@ module Relaton3gpp
     #
     def to_hash(embedded: false)
       hash = super
-      hash["radiotechnology"] = @radiotechnology if @radiotechnology
+      hash["radiotechnology"] = radiotechnology if radiotechnology
       hash["common-ims-spec"] = @common_ims_spec if @common_ims_spec
-      hash["release"] = @release.to_hash if @release
+      hash["release"] = release.to_hash if release
       hash
     end
   end

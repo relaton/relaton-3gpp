@@ -127,7 +127,7 @@ Relaton3gpp::BibliographicItem.new(**bib_hash)
 
 === Fetch data
 
-There is a 3GPP dataset ftp://www.3gpp.org/Information/Databases/Spec_Status/[latest *.zip] which can be converted into RelatonXML/BibXML/BibYAML formats.
+There is a 3GPP dataset ftp://www.3gpp.org/Information/Databases/[latest *.csv] which can be converted into RelatonXML/BibXML/BibYAML formats.
 
 The method `Relaton3GPP::DataFetcher.fetch(output: "data", format: "yaml")` converts all the documents from the dataset and save them to the `./data` folder in YAML format.
 Arguments:
