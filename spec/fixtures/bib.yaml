@@ -65,14 +65,14 @@ script:
 - Latn
 place:
 - Sophia Antipolis Cedex, France
-doctype:
-  type: TR
 ext:
   schema-version: v1.0.1
-release:
-  freeze_stage1_meeting: SMG-#28
-  freeze_stage2_meeting: SMG-#28
-  freeze_stage3_meeting: SMG-#28
-  close_meeting: SA#28
-  project_start: '1994-08-18'
-  project_end: '1999-02-12'
+  doctype:
+    type: TR
+  release:
+    freeze_stage1_meeting: SMG-#28
+    freeze_stage2_meeting: SMG-#28
+    freeze_stage3_meeting: SMG-#28
+    close_meeting: SA#28
+    project_start: '1994-08-18'
+    project_end: '1999-02-12'

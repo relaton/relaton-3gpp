@@ -85,10 +85,14 @@ module Relaton3gpp
     #
     def to_hash(embedded: false)
       hash = super
-      hash["radiotechnology"] = radiotechnology if radiotechnology
-      hash["common-ims-spec"] = @common_ims_spec if @common_ims_spec
-      hash["release"] = release.to_hash if release
+      hash["ext"]["radiotechnology"] = radiotechnology if radiotechnology
+      hash["ext"]["common-ims-spec"] = @common_ims_spec if @common_ims_spec
+      hash["ext"]["release"] = release.to_hash if release
       hash
+    end
+
+    def has_ext?
+      super || radiotechnology || @common_ims_spec || release
     end
   end
 end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Relaton3gpp
-  VERSION = "1.19.2"
+  VERSION = "1.20.0"
 end

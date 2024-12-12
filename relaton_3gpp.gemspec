@@ -38,6 +38,6 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
 
   spec.add_dependency "csv"
   spec.add_dependency "net-ftp", "~> 0.1.0"
-  spec.add_dependency "relaton-bib", "~> 1.19.1"
+  spec.add_dependency "relaton-bib", "~> 1.20.0"
   spec.add_dependency "relaton-index", "~> 0.2.0"
 end
