@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require_relative "lib/relaton_3gpp/version"
+require_relative "lib/relaton/3gpp/version"
 
 Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.name          = "relaton-3gpp"
-  spec.version       = Relaton3gpp::VERSION
+  spec.version       = Relaton::ThreeGpp::VERSION
   spec.authors       = ["Ribose Inc."]
   spec.email         = ["open.source@ribose.com"]
 
-  spec.summary       = "Relaton3gpp: Ruby XMLDOC impementation."
-  spec.description   = "Relaton3gpp: Ruby XMLDOC impementation."
+  spec.summary       = "Relaton::3gpp: Ruby XMLDOC impementation."
+  spec.description   = "Relaton::3gpp: Ruby XMLDOC impementation."
   spec.homepage      = "https://github.com/relaton/relaton-3gpp"
   spec.license       = "BSD-2-Clause"
   spec.required_ruby_version = ">= 2.7.0"
@@ -38,6 +38,6 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
 
   spec.add_dependency "csv"
   spec.add_dependency "net-ftp", "~> 0.1.0"
-  spec.add_dependency "relaton-bib", "~> 1.20.0"
+  spec.add_dependency "relaton-bib", "~> 2.0.0-alpha.1"
   spec.add_dependency "relaton-index", "~> 0.2.0"
 end
