@@ -1,9 +1,9 @@
 module Relaton
   module ThreeGpp
     class Doctype < Relaton::Bib::Doctype
-      VALUES = %w[TR TS].freeze
+      TYPES = %w[TR TS].freeze
 
-      attribute :content, :string, values: VALUES
+      attribute :content, :string, values: TYPES
     end
   end
 end

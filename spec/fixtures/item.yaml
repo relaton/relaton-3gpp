@@ -68,7 +68,7 @@ ext:
   subdoctype: spec
   editorialgroup:
     technical_committee:
-      number: "4567"
+      number: 4567
       type: technical
       identifier: SA 4567
       prefix: SA

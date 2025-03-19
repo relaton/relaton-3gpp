@@ -1,5 +1,5 @@
 describe Relaton::ThreeGpp::Item do
-  let(:input_yaml) { File.read "spec/fixtures/bibdata.yaml", encoding: "UTF-8" }
+  let(:input_yaml) { File.read "spec/fixtures/item.yaml", encoding: "UTF-8" }
   let(:item) { described_class.from_yaml input_yaml }
 
   it "rounds trip" do
