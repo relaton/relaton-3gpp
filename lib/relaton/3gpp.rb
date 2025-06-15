@@ -6,6 +6,7 @@ require_relative "3gpp/util"
 require_relative "3gpp/item"
 require_relative "3gpp/bibitem"
 require_relative "3gpp/bibdata"
+require_relative "3gpp/data_fetcher"
 
 module Relaton
   module ThreeGpp

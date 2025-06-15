@@ -12,7 +12,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.description   = "Relaton::3gpp: Ruby XMLDOC impementation."
   spec.homepage      = "https://github.com/relaton/relaton-3gpp"
   spec.license       = "BSD-2-Clause"
-  spec.required_ruby_version = ">= 2.7.0"
+  spec.required_ruby_version = ">= 3.1.0"
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'https://mygemserver.com'"
 
