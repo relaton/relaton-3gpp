@@ -1,12 +1,13 @@
 require "net/http"
 require "relaton/index"
+require "relaton/core"
 require "relaton/bib"
 require_relative "3gpp/version"
 require_relative "3gpp/util"
 require_relative "3gpp/item"
 require_relative "3gpp/bibitem"
 require_relative "3gpp/bibdata"
-require_relative "3gpp/data_fetcher"
+require_relative "3gpp/bibliography"
 
 module Relaton
   module ThreeGpp
@@ -16,7 +17,7 @@ module Relaton
       # gem_path = File.expand_path "..", __dir__
       # grammars_path = File.join gem_path, "grammars", "*"
       # grammars = Dir[grammars_path].sort.map { |gp| File.read gp }.join
-      Digest::MD5.hexdigest Relaton3gpp::VERSION + RelatonBib::VERSION # grammars
+      Digest::MD5.hexdigest ThreeGpp::VERSION + Relaton::Bib::VERSION # grammars
     end
   end
 end

@@ -1,3 +1,5 @@
+require "relaton/3gpp/data_fetcher"
+
 RSpec.describe Relaton::ThreeGpp::DataFetcher do
   it "create output dir and run fetcher" do
     expect(FileUtils).to receive(:mkdir_p).with("dir")
@@ -15,7 +17,7 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
 
     it "initialize fetcher" do
       expect(subject.instance_variable_get(:@ext)).to eq "xml"
-      expect(subject.instance_variable_get(:@files)).to eq []
+      expect(subject.instance_variable_get(:@files)).to be_instance_of(Set)
       expect(subject.instance_variable_get(:@output)).to eq "dir"
       expect(subject.instance_variable_get(:@format)).to eq "bibxml"
       expect(subject).to be_instance_of(Relaton::ThreeGpp::DataFetcher)

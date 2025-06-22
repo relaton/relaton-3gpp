@@ -1,46 +1,14 @@
-require "csv"
+require "fileutils"
+require "net/ftp"
 require_relative "parser"
 
 module Relaton
   module ThreeGpp
-    class DataFetcher
+    class DataFetcher < Core::DataFetcher
       CURRENT = "current.yaml".freeze
-      #
-      # Data fetcher initializer
-      #
-      # @param [String] output directory to save files
-      # @param [String] format format of output files (xml, yaml, bibxml)
-      #
-      def initialize(output, format)
-        require "fileutils"
-        require "net/ftp"
-        require "csv"
-
-        @output = output
-        @format = format
-        @ext = format.sub(/^bib/, "")
-        @files = []
-      end
 
       def index
         @index ||= Relaton::Index.find_or_create "3gpp", file: "index-v1.yaml"
-      end
-
-      #
-      # Initialize fetcher and run fetch
-      #
-      # @param [Strin] source source name
-      # @param [Strin] output directory to save files, default: "data"
-      # @param [Strin] format format of output files (xml, yaml, bibxml), default: yaml
-      #
-      def self.fetch(source, output: "data", format: "yaml")
-        t1 = Time.now
-        puts "Started at: #{t1}"
-        FileUtils.mkdir_p output
-        new(output, format).fetch(source == "status-smg-3GPP-force")
-        t2 = Time.now
-        puts "Stopped at: #{t2}"
-        puts "Done in: #{(t2 - t1).round} sec."
       end
 
       #

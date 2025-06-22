@@ -1,4 +1,6 @@
-describe Relaton::Bib::Parser do
+require "relaton/3gpp/parser"
+
+describe Relaton::ThreeGpp::Parser do
   it "parses a 3GPP document" do
     row = CSV::Row.new(
       [
@@ -46,7 +48,7 @@ describe Relaton::Bib::Parser do
         "Dec 17 1999 12:00AM",
       ]
     )
-    item = Relaton::ThreeGpp::Parser.parse(row)
+    item = described_class.parse(row)
     expect(item).to be_a(Relaton::Bib::ItemData)
     expect(item.type).to eq("standard")
     expect(item.language).to eq(["en"])
@@ -77,5 +79,39 @@ describe Relaton::Bib::Parser do
     expect(item.ext.release.close_meeting).to eq("SA#40")
     expect(item.ext.release.project_start.to_s).to eq("1996-11-01")
     expect(item.ext.release.project_end.to_s).to eq("1999-12-17")
+  end
+
+  context "#release" do
+    it "Ph number" do
+      row = CSV::Row.new(["Release", "WPM Code 2G"], ["Phase 2", "GSM_PH2"])
+      parser = described_class.new(row)
+      expect(parser.release).to eq("Ph2")
+    end
+
+    it "Release" do
+      row = CSV::Row.new(["Release", "WPM Code 2G"], ["UMTS", ""])
+      parser = described_class.new(row)
+      expect(parser.release).to eq("UMTS")
+    end
+  end
+
+  context "#parse_radiotechnology" do
+    it "5G" do
+      row = CSV::Row.new(["WPM Code 2G", "WPM Code 3G"], ["GSM_Release_99", "3G4G5G_Rel-15"])
+      parser = described_class.new(row)
+      expect(parser.parse_radiotechnology).to eq("5G")
+    end
+
+    it "4G" do
+      row = CSV::Row.new(["WPM Code 2G", "WPM Code 3G"], ["GSM_Release_99", "3G4G_Rel-10"])
+      parser = described_class.new(row)
+      expect(parser.parse_radiotechnology).to eq("LTE")
+    end
+
+    it "2G" do
+      row = CSV::Row.new(["WPM Code 2G", "WPM Code 3G"], ["GSM_Release_99", ""])
+      parser = described_class.new(row)
+      expect(parser.parse_radiotechnology).to eq("2G")
+    end
   end
 end

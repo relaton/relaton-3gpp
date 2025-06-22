@@ -1,3 +1,5 @@
+require "csv"
+
 module Relaton
   module ThreeGpp
     class Parser
