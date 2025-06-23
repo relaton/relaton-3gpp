@@ -1,5 +1,6 @@
 require "fileutils"
 require "net/ftp"
+require_relative "../3gpp"
 require_relative "parser"
 
 module Relaton
@@ -8,7 +9,7 @@ module Relaton
       CURRENT = "current.yaml".freeze
 
       def index
-        @index ||= Relaton::Index.find_or_create "3gpp", file: "index-v1.yaml"
+        @index ||= Relaton::Index.find_or_create "3gpp", file: Bibliography::INDEX_FILE
       end
 
       #
@@ -69,27 +70,6 @@ module Relaton
       end
 
       #
-      # Fetch document
-      #
-      # @param [Hash] row row from mdb
-      # @param [Array<Hash>] specs specs
-      # @param [Array<Hash>] specrels specrels
-      # @param [Array<Hash>] releases releases
-      # @param [Array<Hash>] tstatus tstatus
-      #
-      # @return [Relaton3gpp::BibliographicItem, nil] bibliographic item
-      #
-      # def fetch_doc(row, specs, specrels, releases, tstatus)
-      #   doc = Parser.parse row, specs, specrels, releases, tstatus
-      #   save_doc doc
-      # rescue StandardError => e
-      #   warn "Error: #{e.message}"
-      #   warn "PubID: #{row[:spec]}:#{row[:release]}/#{row[:MAJOR_VERSION_NB]}."\
-      #        "#{row[:TECHNICAL_VERSION_NB]}.#{row[:EDITORIAL_VERSION_NB]}"
-      #   warn e.backtrace[0..5].join("\n")
-      # end
-
-      #
       # Save document to file
       #
       # @param [RelatonW3c::W3cBibliographicItem, nil] bib bibliographic item
@@ -98,7 +78,7 @@ module Relaton
         return unless bib
 
         bib1 = bib
-        file = file_name(bib1)
+        file = output_file(bib1.docnumber)
         if @files.include? file
           bib1 = merge_duplication bib1, file
           Util.warn "File #{file} already exists. Document: #{bib.docnumber}" if bib1.nil?
@@ -106,7 +86,7 @@ module Relaton
           @files << file
           index.add_or_update bib1.docnumber, file
         end
-        File.write file, serialise(bib1), encoding: "UTF-8" unless bib1.nil?
+        File.write file, serialize(bib1), encoding: "UTF-8" unless bib1.nil?
       end
 
       #
@@ -174,10 +154,10 @@ module Relaton
       #   related bibliographic item, true if relation has been added
       #
       def check_transposed_date(bib, existed)
-        if bib.date[0].on < existed.date[0].on
+        if bib.date[0].at < existed.date[0].at
           add_transposed_relation bib, existed
           [bib, existed, true]
-        elsif bib.date[0].on > existed.date[0].on
+        elsif bib.date[0].at > existed.date[0].at
           add_transposed_relation existed, bib
           [existed, bib, true]
         else [bib, existed, false]
@@ -232,24 +212,12 @@ module Relaton
         changed
       end
 
-      def serialise(bib)
-        case @format
-        when "xml" then bib.to_xml(bibdata: true)
-        when "yaml" then bib.to_hash.to_yaml
-        else bib.send("to_#{@format}")
-        end
+      def to_xml(bib)
+        Bibdata.to_xml(bib)
       end
 
-      #
-      # Generate file name
-      #
-      # @param [RelatonW3c::W3cBibliographicItem] bib bibliographic item
-      #
-      # @return [String] file name
-      #
-      def file_name(bib)
-        name = bib.docnumber.gsub(/[\s,:\/]/, "_").squeeze("_").upcase
-        File.join @output, "#{name}.#{@ext}"
+      def to_yaml(bib)
+        Item.to_yaml(bib)
       end
     end
   end
