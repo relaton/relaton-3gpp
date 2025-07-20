@@ -5,7 +5,7 @@ module Relaton
     # Methods for search IANA standards.
     module Bibliography
       # SOURCE = "http://xml2rfc.tools.ietf.org/public/rfc/bibxml-3gpp-new/"
-      SOURCE = "https://raw.githubusercontent.com/relaton/relaton-data-3gpp/main/"
+      SOURCE = "https://raw.githubusercontent.com/relaton/relaton-data-3gpp/refs/heads/data-v2/"
       INDEX_FILE = "index-v1.yaml"
 
       # @param text [String]
@@ -20,14 +20,13 @@ module Relaton
         resp = Net::HTTP.get_response URI(url)
         return unless resp.code == "200"
 
-        hash = YAML.safe_load resp.body
-        bib_hash = HashConverter.hash_to_bib(hash)
-        bib_hash[:fetched] = Date.today.to_s
-        Item.new(**bib_hash)
+        item = Item.from_yaml(resp.body)
+        item.fetched = Date.today.to_s
+        item
       rescue SocketError, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET,
             EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError,
             Net::ProtocolError, Errno::ETIMEDOUT => e
-        raise Relaton::Bib::RequestError, e.message
+        raise Relaton::RequestError, e.message
       end
 
       # @param ref [String] the W3C standard Code to look up
@@ -42,7 +41,7 @@ module Relaton
           return
         end
 
-        Util.info "Found: `#{result.docidentifier[0].id}`", key: ref
+        Util.info "Found: `#{result.docidentifier[0].content}`", key: ref
         result
       end
 

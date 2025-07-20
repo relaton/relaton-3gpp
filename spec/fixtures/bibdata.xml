@@ -1,5 +1,6 @@
-<bibdata type="standard" schema-version="v1.2.9">
-  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+<bibdata type="standard" schema-version="v1.4.1">
+  <fetched>2025-07-16</fetched>
+  <title type="main">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
   <uri type="src">https://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
   <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
   <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
@@ -25,7 +26,7 @@
     <role type="author"/>
     <person>
       <name>
-        <forename language="en" locale="en-US" script="Latn" initial="J">Juha</forename>
+        <forename language="en" script="Latn">Juha</forename>
         <surname language="en" script="Latn">Rapeli</surname>
       </name>
       <affiliation>
@@ -41,28 +42,11 @@
   <language>en</language>
   <script>Latn</script>
   <place>
-    <city>Sophia Antipolis Cedex, France</city>
+    <formattedPlace>Sophia Antipolis Cedex, France</formattedPlace>
   </place>
   <ext schema-version="v1.0.1">
-    <doctype abbreviation="TR">TR</doctype>
-    <subdoctype>spec</subdoctype>
-    <editorialgroup>
-      <technical-committee number="4567" type="technical" identifier="SA 4567" prefix="SA">Service and System Aspects</technical-committee>
-    </editorialgroup>
-    <ics>
-      <code>33.020</code>
-      <text>Telecommunications and information exchange between systems</text>
-    </ics>
-    <radiotechnology>5G</radiotechnology>
-    <common-ims-spec>false</common-ims-spec>
-    <internal>true</internal>
+    <doctype>TR</doctype>
     <release>
-      <version2G>3.0.0</version2G>
-      <version3G>3.0.0</version3G>
-      <defunct>false</defunct>
-      <wpm-code-2G>00.01U</wpm-code-2G>
-      <wpm-code-3G>00.01U</wpm-code-3G>
-      <freeze-meeting>SMG-#28</freeze-meeting>
       <freeze-stage1-meeting>SMG-#28</freeze-stage1-meeting>
       <freeze-stage2-meeting>SMG-#28</freeze-stage2-meeting>
       <freeze-stage3-meeting>SMG-#28</freeze-stage3-meeting>

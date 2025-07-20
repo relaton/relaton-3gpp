@@ -15,14 +15,15 @@ module Relaton
       #
       # Parse documents
       #
-      # @param [Boolean] renewal force to update all documents
+      # @param [String] source source of documents, status-smg-3gpp for updare or status-smg-3gpp-force for renewal
       #
-      def fetch(renewal) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      def fetch(source) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        renewal = source == "status-smg-3GPP-force"
         file = get_file renewal
         return unless file && File.exist?(file) && File.size(file) > 20_000_000
 
         if renewal
-          FileUtils.rm_f File.join(@output, "/*") # if renewal && dbs["2001-04-25_schedule"].any?
+          FileUtils.rm_f Dir.glob(File.join(@output, "/*")) # if renewal && dbs["2001-04-25_schedule"].any?
           index.remove_all # if renewal
         end
         CSV.open(file, "r:bom|utf-8", headers: true).each do |row|

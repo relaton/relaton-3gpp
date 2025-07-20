@@ -3,7 +3,7 @@ require "csv"
 module Relaton
   module ThreeGpp
     class Parser
-      DOCTYPES = { "TS" => "Technical Specification", "TR" => "Technical Report" }.freeze
+      # DOCTYPES = { "TS" => "Technical Specification", "TR" => "Technical Report" }.freeze
 
       #
       # Document parser initalization
@@ -31,7 +31,8 @@ module Relaton
       # @return [Relaton3gpp:BibliographicItem, nil] bibliographic item
       #
       def parse # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-        Bib::ItemData.new(
+        ItemData.new(
+          id: parse_id,
           type: "standard",
           language: ["en"],
           script: ["Latn"],
@@ -50,6 +51,10 @@ module Relaton
           # common_ims_spec: @spec[:ComIMS] == "1",
           # internal: @spec[:"For publication"] == "0",
         )
+      end
+
+      def parse_id
+        number.gsub(/[\s:\/]/, "-").squeeze("-").upcase
       end
 
       #
@@ -184,7 +189,7 @@ module Relaton
       def parse_contributor # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         name = Bib::TypedLocalizedString.new(content: "3rd Generation Partnership Project")
         abbrev = Bib::LocalizedString.new content: "3GPP"
-        org = Bib::Organization.new(name: [name], abbreviation: abbrev, contact: [address])
+        org = Bib::Organization.new(name: [name], abbreviation: abbrev, address: [address])
         contribs = [Bib::Contributor.new(organization: org, role: contributor_role)]
         return contribs unless @row["Last Name"] && @row["Last Name"] != "Vacant"
 
@@ -232,8 +237,9 @@ module Relaton
       end
 
       def parse_doctype
-        type = DOCTYPES[doctype_abbr]
-        Doctype.new(abbreviation: doctype_abbr, content: type)
+        # type = DOCTYPES[doctype_abbr]
+        # Doctype.new(abbreviation: doctype_abbr, content: type)
+        Doctype.new(content: doctype_abbr) # 3GPP grammar alloves only TS and TR content
       end
 
       #

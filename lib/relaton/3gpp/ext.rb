@@ -4,7 +4,7 @@ require_relative "release"
 module Relaton
   module ThreeGpp
     class Ext < Lutaml::Model::Serializable
-      attribute :schema_version, :string
+      attribute :schema_version, method: :get_schema_version
       attribute :doctype, Doctype
       attribute :subdoctype, :string, values: %w[spec release]
       attribute :editorialgroup, Relaton::Bib::EditorialGroup
@@ -13,6 +13,10 @@ module Relaton
       attribute :common_ims_spec, :boolean
       attribute :internal, :boolean
       attribute :release, Release
+
+      def get_schema_version
+        Relaton.schema_versions["relaton-model-3gpp"]
+      end
 
       xml do
         map_attribute "schema-version", to: :schema_version

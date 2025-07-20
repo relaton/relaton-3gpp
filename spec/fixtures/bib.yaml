@@ -1,74 +1,66 @@
 ---
-schema-version: v1.2.9
-id: TR00.01U-UMTS-3.0.0
+id: TR-00.01U-UMTS-3.0.0
+type: standard
+schema_version: v1.4.1
 title:
 - content: Work programme for the standardization of Universal Mobile Telecommunications
     System (UMTS)
-  format: text/plain
   type: main
-link:
-- content: https://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip
-  type: src
-type: standard
-docid:
-- id: 3GPP TR 00.01U:UMTS/3.0.0
+source:
+- type: src
+  content: https://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip
+docidentifier:
+- content: 3GPP TR 00.01U:UMTS/3.0.0
   type: 3GPP
   primary: true
 docnumber: TR 00.01U:UMTS/3.0.0
 date:
 - type: published
-  value: '1994-11-18'
+  at: '1994-11-18'
 contributor:
-- organization:
+- role:
+  - type: author
+  - type: publisher
+  organization:
+    address:
+    - street:
+      - c/o ETSI 650, route des Lucioles
+      - 3GPP Mobile Competence Centre
+      city: Sophia Antipolis Cedex
+      country: France
+      postcode: '06921'
     name:
     - content: 3rd Generation Partnership Project
     abbreviation:
       content: 3GPP
-    contact:
-    - address:
-        street:
-        - c/o ETSI 650, route des Lucioles
-        - 3GPP Mobile Competence Centre
-        city: Sophia Antipolis Cedex
-        country: France
-        postcode: '06921'
-  role:
+- role:
   - type: author
-  - type: publisher
-- person:
+  person:
     name:
-      given:
-        forename:
-        - content: Juha
-          language:
-          - en
-          script:
-          - Latn
+      forename:
+      - language: en
+        script: Latn
+        content: Juha
       surname:
+        language: en
+        script: Latn
         content: Rapeli
-        language:
-        - en
-        script:
-        - Latn
     affiliation:
     - organization:
         name:
         - content: PHILIPS CONSUMER COMMUNICATION
-  role:
-  - type: author
 version:
 - draft: 3.0.0
-revdate: '1994-11-18'
 language:
 - en
 script:
 - Latn
 place:
-- Sophia Antipolis Cedex, France
+- formatted_place: Sophia Antipolis Cedex, France
 ext:
-  schema-version: v1.0.1
+  schema_version: v1.0.1
   doctype:
-    type: TR
+    content: TR
   release:
     freeze_stage1_meeting: SMG-#28
     freeze_stage2_meeting: SMG-#28

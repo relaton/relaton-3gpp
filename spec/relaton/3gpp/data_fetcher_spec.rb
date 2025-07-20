@@ -13,7 +13,7 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
   context "instance" do
     require "net/ftp"
     let(:format) { "xml" }
-    let(:bib) { Relaton::Bib::ItemData.new docnumber: "3GPP TS 01.01:REL-99/8.0.0" }
+    let(:bib) { Relaton::ThreeGpp::ItemData.new docnumber: "3GPP TS 01.01:REL-99/8.0.0" }
 
     subject { Relaton::ThreeGpp::DataFetcher.new("dir", format) }
 
@@ -135,15 +135,15 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
               end
 
               it "renewal" do
-                expect(FileUtils).to receive(:rm_f).with("dir/*")
+                expect(FileUtils).to receive(:rm_f).with([])
                 expect(subject.index).to receive(:remove_all)
-                subject.fetch true
+                subject.fetch "status-smg-3GPP-force"
               end
 
               it "update" do
                 expect(FileUtils).not_to receive(:rm_f).with("dir/*")
                 expect(subject.index).not_to receive(:remove_all)
-                subject.fetch false
+                subject.fetch "status-smg-3GPP"
               end
             end
           end
