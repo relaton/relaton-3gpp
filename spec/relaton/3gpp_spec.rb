@@ -18,6 +18,14 @@ RSpec.describe Relaton::ThreeGpp do
       end
     end
 
+    before do |example|
+      next if example.metadata[:skip_before]
+
+      # Force to download index file
+      allow_any_instance_of(Relaton::Index::Type).to receive(:actual?).and_return(false)
+      allow_any_instance_of(Relaton::Index::FileIO).to receive(:check_file).and_return(nil)
+    end
+
     it "returns bibliographic item" do
       expect(bib).to be_instance_of Relaton::ThreeGpp::ItemData
     end
@@ -25,8 +33,7 @@ RSpec.describe Relaton::ThreeGpp do
     it "render XML" do
       file = "spec/fixtures/bib.xml"
       expect { bib }.to output(
-        %r{\[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFetching\sfrom\sRelaton\srepository\s\.{3}\n
-        \[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFound:\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
+        %r{\[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFound:\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
       ).to_stderr_from_any_process
       xml = bib.to_xml
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
