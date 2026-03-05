@@ -1,6 +1,6 @@
 module Relaton
   module ThreeGpp
-    class ItemData < Relaton::Bib::ItemData
+    class ItemData < Bib::ItemData
       def to_xml(bibdata: false, **opts)
         add_notes opts[:note] do
           bibdata ? Bibdata.to_xml(self) : Bibitem.to_xml(self)

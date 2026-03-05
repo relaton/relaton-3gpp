@@ -21,9 +21,6 @@
       <optional>
         <ref name="docsubtype"/>
       </optional>
-      <optional>
-        <ref name="editorialgroup"/>
-      </optional>
       <zeroOrMore>
         <ref name="ics"/>
       </zeroOrMore>

@@ -3,7 +3,7 @@ require_relative "ext"
 
 module Relaton
   module ThreeGpp
-    class Item < Relaton::Bib::Item
+    class Item < Bib::Item
       model ItemData
 
       attribute :ext, Ext

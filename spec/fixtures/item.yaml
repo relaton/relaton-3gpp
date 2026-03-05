@@ -1,5 +1,5 @@
 ---
-schema_version: v1.2.9
+schema_version: v1.4.1
 id: TR00.01U-UMTS-3.0.0
 title:
 - content: Work programme for the standardization of Universal Mobile Telecommunications
@@ -66,13 +66,6 @@ ext:
     abbreviation: TR
     content: TR
   subdoctype: spec
-  editorialgroup:
-    technical_committee:
-      number: 4567
-      type: technical
-      identifier: SA 4567
-      prefix: SA
-      content: Service and System Aspects
   ics:
     - code: "33.020"
       text: Telecommunications and information exchange between systems

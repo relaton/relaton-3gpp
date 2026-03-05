@@ -191,10 +191,37 @@ module Relaton
         abbrev = Bib::LocalizedString.new content: "3GPP"
         org = Bib::Organization.new(name: [name], abbreviation: abbrev, address: [address])
         contribs = [Bib::Contributor.new(organization: org, role: contributor_role)]
-        return contribs unless @row["Last Name"] && @row["Last Name"] != "Vacant"
+        if @row["Last Name"] && @row["Last Name"] != "Vacant"
+          role = Bib::Contributor::Role.new type: "author"
+          contribs << Bib::Contributor.new(person: person, role: [role])
+        end
+        contribs + editorial_group_contributors
+      end
 
-        role = Bib::Contributor::Role.new type: "author"
-        contribs << Bib::Contributor.new(person: person, role: [role])
+      def editorial_group_contributors # rubocop:disable Metrics/MethodLength
+        contribs = []
+        prime = @row["Responsible Primary"]
+        contribs << editorial_group_contributor(prime, "prime") unless prime.nil? || prime.empty?
+        @row["Responsible Secondary"].strip.split(", ").each do |wg|
+          contribs << editorial_group_contributor(wg, "other")
+        end
+        contribs
+      end
+
+      def editorial_group_contributor(wg_name, wg_type)
+        Bib::Contributor.new(
+          role: [Bib::Contributor::Role.new(
+            type: "author",
+            description: [Bib::LocalizedMarkedUpString.new(content: "committee")],
+          )],
+          organization: Bib::Organization.new(
+            subdivision: [Bib::Subdivision.new(
+              type: "technical-committee",
+              subtype: wg_type,
+              name: [Bib::TypedLocalizedString.new(content: wg_name)],
+            )],
+          ),
+        )
       end
 
       def address
@@ -230,7 +257,6 @@ module Relaton
       def parse_ext
         Ext.new(
           doctype: parse_doctype,
-          editorialgroup: parse_editorialgroup,
           radiotechnology: parse_radiotechnology,
           release: parse_release,
         )
@@ -240,26 +266,6 @@ module Relaton
         # type = DOCTYPES[doctype_abbr]
         # Doctype.new(abbreviation: doctype_abbr, content: type)
         Doctype.new(content: doctype_abbr) # 3GPP grammar alloves only TS and TR content
-      end
-
-      #
-      # Parse editorialgroup
-      #
-      # @return [RelatonBib::EditorialGroup] editorialgroups
-      #
-      def parse_editorialgroup # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-        eg = []
-        prime = @row["Responsible Primary"]
-        eg << create_workgroup(prime, "prime") unless prime.nil? || prime.empty?
-
-        @row["Responsible Secondary"].strip.split(", ").each do |wg|
-          eg << create_workgroup(wg, "other")
-        end
-        Bib::EditorialGroup.new technical_committee: eg
-      end
-
-      def create_workgroup(name, type)
-        Bib::WorkGroup.new(content: name, type: type)
       end
 
       #
