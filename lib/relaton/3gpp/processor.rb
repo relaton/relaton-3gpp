@@ -16,6 +16,7 @@ module Relaton
       # @param opts [Hash]
       # @return [RelatonBib::BibliographicItem]
       def get(code, date, opts)
+        require_relative "../3gpp"
         Bibliography.get(code, date, opts)
       end
 
@@ -34,18 +35,21 @@ module Relaton
       # @param xml [String]
       # @return [RelatonBib::BibliographicItem]
       def from_xml(xml)
+        require_relative "../3gpp"
         Item.from_xml xml
       end
 
       # @param yaml [String]
       # @return [Relaton::ThreeGpp::Item]
       def from_yaml(yaml)
+        require_relative "../3gpp"
         Item.from_yaml(yaml)
       end
 
       # Returns hash of XML grammar
       # @return [String]
       def grammar_hash
+        require_relative "../3gpp"
         @grammar_hash ||= ThreeGpp.grammar_hash
       end
 
@@ -53,7 +57,8 @@ module Relaton
       # Remove index file
       #
       def remove_index_file
-        Relaton::Index.find_or_create("3GPP", url: true, file: Bibliography::INDEX_FILE).remove_file
+        require_relative "../3gpp"
+        Relaton::Index.find_or_create("3GPP", url: true, file: "#{INDEXFILE}.yaml").remove_file
       end
     end
   end

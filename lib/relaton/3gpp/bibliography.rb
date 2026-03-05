@@ -6,12 +6,11 @@ module Relaton
     module Bibliography
       # SOURCE = "http://xml2rfc.tools.ietf.org/public/rfc/bibxml-3gpp-new/"
       SOURCE = "https://raw.githubusercontent.com/relaton/relaton-data-3gpp/refs/heads/data-v2/"
-      INDEX_FILE = "index-v1.yaml"
 
       # @param text [String]
       # @return [RelatonBib::BibliographicItem]
       def search(text) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-        index = Relaton::Index.find_or_create "3GPP", url: "#{SOURCE}index-v1.zip", file: INDEX_FILE
+        index = Relaton::Index.find_or_create "3GPP", url: "#{SOURCE}#{INDEXFILE}.zip", file: "#{INDEXFILE}.yaml"
         row = index.search(text.sub(/^3GPP\s/, "")).min_by { |r| r[:id] }
         return unless row
 

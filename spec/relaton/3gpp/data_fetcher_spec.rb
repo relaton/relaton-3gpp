@@ -185,9 +185,9 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
         expect(subject.send(:serialize, bib)).to match(/docnumber: 3GPP TS 01\.01:REL-99\/8\.0.0/)
       end
 
-      xit "other" do # @TODO: BibXml format is not implemented yet in Relaton::Bib
+      it "other" do
         subject.instance_variable_set(:@format, "bibxml")
-        expect(subject.send(:serialize, bib)).to eq "<bibxm/>"
+        expect(subject.send(:serialize, bib)).to include '<reference anchor="3GPP TS 01.01:REL-99/8.0.0">'
       end
     end
 

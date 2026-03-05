@@ -11,6 +11,8 @@ require_relative "3gpp/bibliography"
 
 module Relaton
   module ThreeGpp
+    INDEXFILE = "index-v1".freeze
+
     # Returns hash of XML reammar
     # @return [String]
     def self.grammar_hash

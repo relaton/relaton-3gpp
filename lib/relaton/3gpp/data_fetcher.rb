@@ -9,7 +9,7 @@ module Relaton
       CURRENT = "current.yaml".freeze
 
       def index
-        @index ||= Relaton::Index.find_or_create "3gpp", file: Bibliography::INDEX_FILE
+        @index ||= Relaton::Index.find_or_create "3gpp", file: "#{INDEXFILE}.yaml"
       end
 
       #
@@ -214,11 +214,15 @@ module Relaton
       end
 
       def to_xml(bib)
-        Bibdata.to_xml(bib)
+        bib.to_xml(bibdata: true)
       end
 
       def to_yaml(bib)
-        Item.to_yaml(bib)
+        bib.to_yaml
+      end
+
+      def to_bibxml(bib)
+        bib.to_rfcxml
       end
     end
   end
