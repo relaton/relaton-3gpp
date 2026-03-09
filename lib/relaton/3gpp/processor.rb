@@ -1,3 +1,5 @@
+require "relaton/core/processor"
+
 module Relaton
   module ThreeGpp
     class Processor < Relaton::Core::Processor
@@ -29,6 +31,7 @@ module Relaton
       # @option opts [String] :format
       #
       def fetch_data(source, opts)
+        require_relative "data_fetcher"
         DataFetcher.fetch(source, **opts)
       end
 
