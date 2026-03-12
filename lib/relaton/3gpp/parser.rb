@@ -32,7 +32,6 @@ module Relaton
       #
       def parse # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         ItemData.new(
-          id: parse_id,
           type: "standard",
           language: ["en"],
           script: ["Latn"],
@@ -51,10 +50,6 @@ module Relaton
           # common_ims_spec: @spec[:ComIMS] == "1",
           # internal: @spec[:"For publication"] == "0",
         )
-      end
-
-      def parse_id
-        number.gsub(/[\s:\/]/, "-").squeeze("-").upcase
       end
 
       #
