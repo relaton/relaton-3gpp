@@ -8,6 +8,14 @@ module Relaton
     class DataFetcher < Core::DataFetcher
       CURRENT = "current.yaml".freeze
 
+      def gh_issue_channel
+        ["relaton/relaton-3gpp", "Error fetching 3GPP documents"]
+      end
+
+      def log_error(msg)
+        Util.error msg
+      end
+
       def index
         @index ||= Relaton::Index.find_or_create "3gpp", file: "#{INDEXFILE}.yaml"
       end
@@ -27,10 +35,11 @@ module Relaton
           index.remove_all # if renewal
         end
         CSV.open(file, "r:bom|utf-8", headers: true).each do |row|
-          save_doc Parser.parse(row)
+          save_doc Parser.parse(row, @errors)
         end
         File.write CURRENT, @current.to_yaml, encoding: "UTF-8"
         index.save
+        repot_errors
       end
 
       #

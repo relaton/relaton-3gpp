@@ -17,6 +17,20 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
 
     subject { Relaton::ThreeGpp::DataFetcher.new("dir", format) }
 
+    it "#gh_issue_channel" do
+      expect(subject.gh_issue_channel).to eq ["relaton/relaton-3gpp", "Error fetching 3GPP documents"]
+    end
+
+    it "#repot_errors" do
+      errors = subject.instance_variable_get(:@errors)
+      errors[:title] = false
+      errors[:date] = true
+      expect(subject.gh_issue).to receive(:create_issue)
+      expect do
+        subject.repot_errors
+      end.to output(/\[relaton-3gpp\] ERROR: Failed to fetch date/).to_stderr_from_any_process
+    end
+
     context "initialize fetcher" do
       let(:format) { "bibxml" }
       it do
@@ -128,10 +142,11 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
                 expect(File).to receive(:size).with("file.csv").and_return 25_000_000
                 expect(CSV).to receive(:open)
                   .with("file.csv", "r:bom|utf-8", headers: true).and_return [:row]
-                expect(Relaton::ThreeGpp::Parser).to receive(:parse).with(:row).and_return :doc
+                expect(Relaton::ThreeGpp::Parser).to receive(:parse).with(:row, subject.instance_variable_get(:@errors)).and_return :doc
                 expect(subject).to receive(:save_doc).with(:doc)
                 expect(File).to receive(:write).with("current.yaml", anything, encoding: "UTF-8")
                 expect(subject.index).to receive(:save)
+                expect(subject).to receive(:repot_errors)
               end
 
               it "renewal" do

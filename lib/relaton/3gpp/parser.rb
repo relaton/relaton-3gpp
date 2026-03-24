@@ -10,19 +10,21 @@ module Relaton
       #
       # @param [CSV::Row] row CSV row
       #
-      def initialize(row)
+      def initialize(row, errors)
         @row = row
+        @errors = errors
       end
 
       #
       # Initialize document parser and run it
       #
       # @param [CSV:Row] row CSV row
+      # @param [Hash] errors collection of parsing errors
       #
       # @return [RelatonBib:BibliographicItem, nil] bibliographic item
       #
-      def self.parse(row)
-        new(row).parse
+      def self.parse(row, errors = {})
+        new(row, errors).parse
       end
 
       #
@@ -58,8 +60,8 @@ module Relaton
       # @return [RelatonBib::TypedTitleStringCollection] title
       #
       def parse_title
+        @errors[:title] &&= @row["Title"].nil? || @row["Title"].empty?
         [Bib::Title.new(content: @row["Title"], type: "main")]
-        # RelatonBib::TypedTitleStringCollection.new [t]
       end
 
       #
@@ -68,6 +70,7 @@ module Relaton
       # @return [Array<RelatonBib::TypedUri>] link
       #
       def parse_source
+        @errors[:source] &&= @row["Link"].nil? || @row["Link"].empty?
         return [] unless @row["Link"]
 
         [Bib::Uri.new(type: "src", content: @row["Link"])]
@@ -90,6 +93,7 @@ module Relaton
       # @return [Arra<RelatonBib::DocumentIdentifier>] docidentifier
       #
       def parse_docid
+        @errors[:docid] &&= @row[0].nil? || @row[0].empty?
         [Bib::Docidentifier.new(type: "3GPP", content: "3GPP #{number}", primary: true)]
       end
 
@@ -109,6 +113,7 @@ module Relaton
       end
 
       def parse_version
+        @errors[:version] &&= version.nil? || version.empty?
         [Bib::Version.new(draft: version)]
       end
 
@@ -139,6 +144,7 @@ module Relaton
       # @return [Array<RelatonBib::BibliographicDate>] date
       #
       def parse_date
+        @errors[:date] &&= @row["Date"].nil? || @row["Date"].empty?
         dates = []
         if @row["Date"]
           on = Date.parse(@row["Date"]).to_s
@@ -190,7 +196,9 @@ module Relaton
           role = Bib::Contributor::Role.new type: "author"
           contribs << Bib::Contributor.new(person: person, role: [role])
         end
-        contribs + editorial_group_contributors
+        result = contribs + editorial_group_contributors
+        @errors[:contributor] &&= result.empty?
+        result
       end
 
       def editorial_group_contributors # rubocop:disable Metrics/MethodLength
@@ -269,12 +277,14 @@ module Relaton
       # @return [String] radio technology
       #
       def parse_radiotechnology
-        case @row["WPM Code 3G"]
-        when /5G/ then "5G"
-        when /4G/ then "LTE"
-        when /3G/ then "3G"
-        else @row["WPM Code 2G"] && "2G"
-        end
+        result = case @row["WPM Code 3G"]
+                 when /5G/ then "5G"
+                 when /4G/ then "LTE"
+                 when /3G/ then "3G"
+                 else @row["WPM Code 2G"] && "2G"
+                 end
+        @errors[:radiotechnology] &&= result.nil?
+        result
       end
 
       #
@@ -283,6 +293,7 @@ module Relaton
       # @return [Relaton3gpp::Release, nil] release
       #
       def parse_release # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        @errors[:release] &&= release.nil? && @row["WPM Code 2G"].nil? && @row["WPM Code 3G"].nil?
         project_start = Date.parse(@row["Project Start"]) if @row["Project Start"]
         project_end = Date.parse(@row["Project End"]) if @row["Project End"]
         Release.new(
