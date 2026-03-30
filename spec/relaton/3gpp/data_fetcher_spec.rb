@@ -17,15 +17,10 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
 
     subject { Relaton::ThreeGpp::DataFetcher.new("dir", format) }
 
-    it "#gh_issue_channel" do
-      expect(subject.gh_issue_channel).to eq ["relaton/relaton-3gpp", "Error fetching 3GPP documents"]
-    end
-
     it "#repot_errors" do
       errors = subject.instance_variable_get(:@errors)
       errors[:title] = false
       errors[:date] = true
-      expect(subject.gh_issue).to receive(:create_issue)
       expect do
         subject.repot_errors
       end.to output(/\[relaton-3gpp\] ERROR: Failed to fetch date/).to_stderr_from_any_process

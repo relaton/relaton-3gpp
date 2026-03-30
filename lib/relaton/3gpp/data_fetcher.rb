@@ -8,10 +8,6 @@ module Relaton
     class DataFetcher < Core::DataFetcher
       CURRENT = "current.yaml".freeze
 
-      def gh_issue_channel
-        ["relaton/relaton-3gpp", "Error fetching 3GPP documents"]
-      end
-
       def log_error(msg)
         Util.error msg
       end

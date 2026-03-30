@@ -122,11 +122,15 @@ module Relaton
       end
 
       def release
-        @release ||=  case @row["WPM Code 2G"]
-                      when /Release_(\d+)/ then "REL-#{$1}"
-                      when /PH(\d+)/ then "Ph#{$1}"
-                      else @row["Release"]
-                      end
+        @release ||= begin
+          r = case @row["WPM Code 2G"]
+              when /Release_(\d+)/ then "REL-#{$1}"
+              when /PH(\d+)/ then "Ph#{$1}"
+              else @row["Release"]
+              end
+          @errors[:release] &&= r.nil? || r.empty?
+          r
+        end
       end
 
       #
@@ -144,12 +148,12 @@ module Relaton
       # @return [Array<RelatonBib::BibliographicDate>] date
       #
       def parse_date
-        @errors[:date] &&= @row["Date"].nil? || @row["Date"].empty?
         dates = []
         if @row["Date"]
           on = Date.parse(@row["Date"]).to_s
           dates << Bib::Date.new(type: "published", at: on)
         end
+        @errors[:date] &&= dates.empty?
         dates
       end
 
@@ -196,19 +200,27 @@ module Relaton
           role = Bib::Contributor::Role.new type: "author"
           contribs << Bib::Contributor.new(person: person, role: [role])
         end
-        result = contribs + editorial_group_contributors
-        @errors[:contributor] &&= result.empty?
-        result
+        @errors[:contributor] &&= contribs.empty?
+        contribs + prime_contribs + other_contribs
       end
 
-      def editorial_group_contributors # rubocop:disable Metrics/MethodLength
-        contribs = []
-        prime = @row["Responsible Primary"]
-        contribs << editorial_group_contributor(prime, "prime") unless prime.nil? || prime.empty?
-        @row["Responsible Secondary"].strip.split(", ").each do |wg|
-          contribs << editorial_group_contributor(wg, "other")
+      def other_contribs
+        contribs = @row["Responsible Secondary"].strip.split(", ").map do |wg|
+          editorial_group_contributor(wg, "other")
         end
+        @errors[:editorial_group_contributor_other] &&= contribs.empty?
         contribs
+      end
+
+      def prime_contribs
+        prime = @row["Responsible Primary"]
+        if prime.nil? || prime.empty?
+          @errors[:editorial_group_contributor_prime] &&= true
+          return []
+        end
+
+        @errors[:editorial_group_contributor_prime] &&= false
+        [editorial_group_contributor(prime, "prime")]
       end
 
       def editorial_group_contributor(wg_name, wg_type)
@@ -239,15 +251,37 @@ module Relaton
       end
 
       def person
-        surname = Bib::LocalizedString.new content: @row["Last Name"], language: "en", script: "Latn"
-        forename = Bib::FullNameType::Forename.new content: @row["First Name"], language: "en", script: "Latn"
         name = Bib::FullName.new(surname: surname, forename: [forename])
         Bib::Person.new(name: name, affiliation: affiliation)
       end
 
-      def affiliation
-        return [] if @row["Organisation"].nil? || @row["Organisation"].empty?
+      def surname
+        if @row["Last Name"].nil? || @row["Last Name"].empty?
+          @errors[:contributor_person_surname] &&= true
+          return nil
+        end
 
+        @errors[:contributor_person_surname] &&= false
+        Bib::LocalizedString.new content: @row["Last Name"], language: "en", script: "Latn"
+      end
+
+      def forename
+        if @row["First Name"].nil? || @row["First Name"].empty?
+          @errors[:contributor_person_forename] &&= true
+          return nil
+        end
+
+        @errors[:contributor_person_forename] &&= false
+        Bib::FullNameType::Forename.new content: @row["First Name"], language: "en", script: "Latn"
+      end
+
+      def affiliation
+        if @row["Organisation"].nil? || @row["Organisation"].empty?
+          @errors[:contributor_person_affiliation] &&= true
+          return []
+        end
+
+        @errors[:contributor_person_affiliation] &&= false
         name = Bib::TypedLocalizedString.new(content: @row["Organisation"])
         org = Bib::Organization.new(name: [name])
         [Bib::Affiliation.new(organization: org)]
@@ -293,23 +327,65 @@ module Relaton
       # @return [Relaton3gpp::Release, nil] release
       #
       def parse_release # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-        @errors[:release] &&= release.nil? && @row["WPM Code 2G"].nil? && @row["WPM Code 3G"].nil?
-        project_start = Date.parse(@row["Project Start"]) if @row["Project Start"]
-        project_end = Date.parse(@row["Project End"]) if @row["Project End"]
+        unless wmp_code2g || wmp_code3g || stage1_freeze || stage2_freeze ||
+            stage3_freeze || close_meeting || project_start || project_end
+          return
+        end
+
         Release.new(
           # version2g: @rel[:version_2g],
           # version3g: @rel[:version_3g],
           # defunct: @rel[:defunct] == "1",
-          wpm_code_2g: @row["WPM Code 2G"],
-          wpm_code_3g: @row["WPM Code 3G"],
+          wpm_code_2g: wmp_code2g,
+          wpm_code_3g: wmp_code3g,
           # freeze_meeting: @rel[:"freeze meeting"],
-          freeze_stage1_meeting: @row["Stage 1 Freeze"],
-          freeze_stage2_meeting: @row["Stage 2 Freeze"],
-          freeze_stage3_meeting: @row["Stage 3 Freeze"],
-          close_meeting: @row["Close Meeting"],
+          freeze_stage1_meeting: stage1_freeze,
+          freeze_stage2_meeting: stage2_freeze,
+          freeze_stage3_meeting: stage3_freeze,
+          close_meeting: close_meeting,
           project_start: project_start,
           project_end: project_end,
         )
+      end
+
+      def wmp_code2g
+        @errors[:wmp_code_2g] &&= @row["WPM Code 2G"].nil? || @row["WPM Code 2G"].empty?
+        @row["WPM Code 2G"]
+      end
+
+      def wmp_code3g
+        @errors[:wmp_code_3g] &&= @row["WPM Code 3G"].nil? || @row["WPM Code 3G"].empty?
+        @row["WPM Code 3G"]
+      end
+
+      def stage1_freeze
+        @errors[:freeze_stage1_meeting] &&= @row["Stage 1 Freeze"].nil? || @row["Stage 1 Freeze"].empty?
+        @row["Stage 1 Freeze"]
+      end
+
+      def stage2_freeze
+        @errors[:freeze_stage2_meeting] &&= @row["Stage 2 Freeze"].nil? || @row["Stage 2 Freeze"].empty?
+        @row["Stage 2 Freeze"]
+      end
+
+      def stage3_freeze
+        @errors[:freeze_stage3_meeting] &&= @row["Stage 3 Freeze"].nil? || @row["Stage 3 Freeze"].empty?
+        @row["Stage 3 Freeze"]
+      end
+
+      def close_meeting
+        @errors[:close_meeting] &&= @row["Close Meeting"].nil? || @row["Close Meeting"].empty?
+        @row["Close Meeting"]
+      end
+
+      def project_start
+        @errors[:project_start] &&= @row["Project Start"].nil? || @row["Project Start"].empty?
+        Date.parse(@row["Project Start"]) if @row["Project Start"]
+      end
+
+      def project_end
+        @errors[:project_end] &&= @row["Project End"].nil? || @row["Project End"].empty?
+        Date.parse(@row["Project End"]) if @row["Project End"]
       end
     end
   end

@@ -105,6 +105,65 @@ describe Relaton::ThreeGpp::Parser do
     end
   end
 
+  context "errors tracking" do
+    let(:errors) { Hash.new(true) }
+    let(:full_headers) do
+      %w[Spec\ number Title Link Version Date Is\ TS Last\ Name First\ Name
+         Organisation Responsible\ Primary Responsible\ Secondary Release
+         WPM\ Code\ 2G WPM\ Code\ 3G Stage\ 1\ Freeze Stage\ 2\ Freeze
+         Stage\ 3\ Freeze Close\ Meeting Project\ Start Project\ End]
+    end
+    let(:full_values) do
+      ["02.09", "Security aspects",
+       "https://www.3gpp.org/ftp/Specs/archive/02_series/02.09/0209-800.zip",
+       "8.0.0", "Jun 30 2000 12:00AM", "1", "Doe", "John", "ACME",
+       "S3", "S1, CP", "Release 1999", "GSM_Release_99", "3G_R1999",
+       "SA-#6", "SA-#6", "SA-#6", "SA#40",
+       "Nov  1 1996 12:00AM", "Dec 17 1999 12:00AM"]
+    end
+
+    it "sets error flags to false when all fields are present" do
+      row = CSV::Row.new(full_headers, full_values)
+      described_class.parse(row, errors)
+      %i[title source docid version release date contributor
+         editorial_group_contributor_prime editorial_group_contributor_other
+         contributor_person_surname contributor_person_forename
+         contributor_person_affiliation radiotechnology
+         wmp_code_2g wmp_code_3g freeze_stage1_meeting freeze_stage2_meeting
+         freeze_stage3_meeting close_meeting project_start project_end].each do |key|
+        expect(errors[key]).to be(false), "expected errors[:#{key}] to be false"
+      end
+    end
+
+    it "keeps error flags true when fields are missing" do
+      row = CSV::Row.new(full_headers,
+                         [nil, nil, nil, nil, nil, "1", nil, nil, nil, nil, "", nil, nil, nil,
+                          nil, nil, nil, nil, nil, nil])
+      described_class.parse(row, errors)
+      %i[title source docid version date
+         wmp_code_2g wmp_code_3g freeze_stage1_meeting freeze_stage2_meeting
+         freeze_stage3_meeting close_meeting project_start project_end].each do |key|
+        expect(errors[key]).to be(true), "expected errors[:#{key}] to be true"
+      end
+    end
+
+    it "once false, stays false on subsequent missing-data rows" do
+      good_row = CSV::Row.new(full_headers, full_values)
+      described_class.parse(good_row, errors)
+
+      bad_row = CSV::Row.new(full_headers,
+                             [nil, nil, nil, nil, nil, "1", nil, nil, nil, nil, "", nil, nil, nil,
+                              nil, nil, nil, nil, nil, nil])
+      described_class.parse(bad_row, errors)
+
+      %i[title source docid version radiotechnology
+         wmp_code_2g wmp_code_3g freeze_stage1_meeting freeze_stage2_meeting
+         freeze_stage3_meeting close_meeting project_start project_end].each do |key|
+        expect(errors[key]).to be(false), "expected errors[:#{key}] to stay false after good row"
+      end
+    end
+  end
+
   context "#parse_radiotechnology" do
     it "5G" do
       row = CSV::Row.new(["WPM Code 2G", "WPM Code 3G"], ["GSM_Release_99", "3G4G5G_Rel-15"])
