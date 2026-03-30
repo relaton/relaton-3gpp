@@ -35,7 +35,7 @@ module Relaton
         end
         File.write CURRENT, @current.to_yaml, encoding: "UTF-8"
         index.save
-        repot_errors
+        report_errors
       end
 
       #

@@ -17,12 +17,12 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
 
     subject { Relaton::ThreeGpp::DataFetcher.new("dir", format) }
 
-    it "#repot_errors" do
+    it "#report_errors" do
       errors = subject.instance_variable_get(:@errors)
       errors[:title] = false
       errors[:date] = true
       expect do
-        subject.repot_errors
+        subject.report_errors
       end.to output(/\[relaton-3gpp\] ERROR: Failed to fetch date/).to_stderr_from_any_process
     end
 
@@ -141,7 +141,7 @@ RSpec.describe Relaton::ThreeGpp::DataFetcher do
                 expect(subject).to receive(:save_doc).with(:doc)
                 expect(File).to receive(:write).with("current.yaml", anything, encoding: "UTF-8")
                 expect(subject.index).to receive(:save)
-                expect(subject).to receive(:repot_errors)
+                expect(subject).to receive(:report_errors)
               end
 
               it "renewal" do
