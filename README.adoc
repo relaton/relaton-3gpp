@@ -64,7 +64,7 @@ item.to_xml bibdata: true
       <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
       <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
       ...
-        <ext schema-version="v1.0.1">
+        <ext schema-version="v1.0.4">
           <doctype>TR</doctype>
           <editorialgroup>
             <technical-committee type="prime">SMG5</technical-committee>

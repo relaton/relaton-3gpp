@@ -13,31 +13,21 @@
         <value>release</value>
       </choice>
     </define>
-    <define name="BibDataExtensionType">
-      <optional>
-        <attribute name="schema-version"/>
-      </optional>
-      <ref name="doctype"/>
-      <optional>
-        <ref name="docsubtype"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="ics"/>
-      </zeroOrMore>
-      <optional>
-        <ref name="radiotechnology"/>
-      </optional>
-      <optional>
-        <ref name="common-ims-spec"/>
-      </optional>
-      <optional>
-        <ref name="internal"/>
-      </optional>
-      <optional>
-        <ref name="release"/>
-      </optional>
-    </define>
   </include>
+  <define name="BibDataExtensionType" combine="interleave">
+    <optional>
+      <ref name="radiotechnology"/>
+    </optional>
+    <optional>
+      <ref name="common-ims-spec"/>
+    </optional>
+    <optional>
+      <ref name="internal"/>
+    </optional>
+    <optional>
+      <ref name="release"/>
+    </optional>
+  </define>
   <define name="RadioTechnologyType">
     <choice>
       <value>2G</value>

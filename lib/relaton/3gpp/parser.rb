@@ -294,6 +294,7 @@ module Relaton
       def parse_ext
         Ext.new(
           doctype: parse_doctype,
+          flavor: "3gpp",
           radiotechnology: parse_radiotechnology,
           release: parse_release,
         )

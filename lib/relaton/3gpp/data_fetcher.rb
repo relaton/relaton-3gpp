@@ -50,7 +50,7 @@ module Relaton
         @current ||= {}
         n = 0
         begin
-          ftp = Net::FTP.new("www.3gpp.org")
+          ftp = Net::FTP.new("www.3gpp.org", open_timeout: 30)
           ftp.resume = true
           ftp.login
           ftp.chdir "/Information/Databases/"
@@ -65,7 +65,7 @@ module Relaton
 
           tmp_file = File.join Dir.tmpdir, "3gpp.csv"
           ftp.get(file, tmp_file)
-        rescue Net::ReadTimeout => e
+        rescue Net::OpenTimeout, Net::ReadTimeout => e
           n += 1
           retry if n < 5
           raise e

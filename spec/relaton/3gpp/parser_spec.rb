@@ -80,6 +80,7 @@ describe Relaton::ThreeGpp::Parser do
     expect(item.contributor[3].organization.subdivision[0].subtype).to eq("other")
     expect(item.contributor[4].organization.subdivision[0].name[0].content).to eq("CP")
     expect(item.contributor[4].organization.subdivision[0].subtype).to eq("other")
+    expect(item.ext.flavor).to eq("3gpp")
     expect(item.ext.radiotechnology).to eq("3G")
     expect(item.ext.release.wpm_code_2g).to eq("GSM_Release_99")
     expect(item.ext.release.wpm_code_3g).to eq("3G_R1999")
