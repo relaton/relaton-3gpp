@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe Relaton3gpp do
+RSpec.describe Relaton::ThreeGpp do
   it "has a version number" do
-    expect(Relaton3gpp::VERSION).not_to be nil
+    expect(Relaton::ThreeGpp::VERSION).not_to be nil
   end
 
   it "returs grammar hash" do
-    hash = Relaton3gpp.grammar_hash
+    hash = Relaton::ThreeGpp.grammar_hash
     expect(hash).to be_instance_of String
     expect(hash.size).to eq 32
   end
@@ -14,19 +14,26 @@ RSpec.describe Relaton3gpp do
   context "get document" do
     let(:bib) do
       VCR.use_cassette "3gpp_get_document" do
-        Relaton3gpp::Bibliography.get "3GPP TR 00.01U:UMTS/3.0.0"
+        Relaton::ThreeGpp::Bibliography.get "3GPP TR 00.01U:UMTS/3.0.0"
       end
     end
 
+    before do |example|
+      next if example.metadata[:skip_before]
+
+      # Force to download index file
+      allow_any_instance_of(Relaton::Index::Type).to receive(:actual?).and_return(false)
+      allow_any_instance_of(Relaton::Index::FileIO).to receive(:check_file).and_return(nil)
+    end
+
     it "returns bibliographic item" do
-      expect(bib).to be_instance_of Relaton3gpp::BibliographicItem
+      expect(bib).to be_instance_of Relaton::ThreeGpp::ItemData
     end
 
     it "render XML" do
       file = "spec/fixtures/bib.xml"
       expect { bib }.to output(
-        %r{\[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFetching\sfrom\sRelaton\srepository\s\.{3}\n
-        \[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFound:\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
+        %r{\[relaton-3gpp\]\sINFO:\s\(3GPP\sTR\s00.01U:UMTS/3\.0\.0\)\sFound:\s`3GPP\sTR\s00.01U:UMTS/3.0.0`}x,
       ).to_stderr_from_any_process
       xml = bib.to_xml
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
@@ -43,15 +50,14 @@ RSpec.describe Relaton3gpp do
       File.write file, xml, encoding: "UTF-8" unless File.exist? file
       expect(xml).to be_equivalent_to File.read(file, encoding: "UTF-8")
         .sub(/(?<=<fetched>)\d{4}-\d{2}-\d{2}/, Date.today.to_s)
-      # TODO: uncomment following 3 lines when schema will be updated to allow optional editorialgroup
-      # schema = Jing.new "grammars/relaton-3gpp-compile.rng"
-      # errors = schema.validate file
-      # expect(errors).to eq []
+      schema = Jing.new "grammars/relaton-3gpp-compile.rng"
+      errors = schema.validate file
+      expect(errors).to eq []
     end
 
     it "render YAML" do
       file = "spec/fixtures/bib.yaml"
-      hash = bib.to_hash
+      hash = YAML.load bib.to_yaml
       expect(hash["fetched"]).to match(/^\d{4}-\d{2}-\d{2}$/)
       hash.delete("fetched")
       File.write file, hash.to_yaml, encoding: "UTF-8"
@@ -64,7 +70,7 @@ RSpec.describe Relaton3gpp do
   it "document not found" do
     VCR.use_cassette "3gpp_document_not_found" do
       expect do
-        expect(Relaton3gpp::Bibliography.get("3GPP 1234")).to be_nil
+        expect(Relaton::ThreeGpp::Bibliography.get("3GPP 1234")).to be_nil
       end.to output(/\[relaton-3gpp\] INFO: \(3GPP 1234\) Not found/).to_stderr_from_any_process
     end
   end

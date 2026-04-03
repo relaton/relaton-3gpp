@@ -1,0 +1,25 @@
+require "net/http"
+require "relaton/index"
+require "relaton/core"
+require "relaton/bib"
+require_relative "3gpp/version"
+require_relative "3gpp/util"
+require_relative "3gpp/item"
+require_relative "3gpp/bibitem"
+require_relative "3gpp/bibdata"
+require_relative "3gpp/bibliography"
+
+module Relaton
+  module ThreeGpp
+    INDEXFILE = "index-v1".freeze
+
+    # Returns hash of XML reammar
+    # @return [String]
+    def self.grammar_hash
+      # gem_path = File.expand_path "..", __dir__
+      # grammars_path = File.join gem_path, "grammars", "*"
+      # grammars = Dir[grammars_path].sort.map { |gp| File.read gp }.join
+      Digest::MD5.hexdigest ThreeGpp::VERSION + Relaton::Bib::VERSION # grammars
+    end
+  end
+end

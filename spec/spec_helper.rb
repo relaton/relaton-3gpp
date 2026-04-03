@@ -11,7 +11,7 @@ SimpleCov.start do
   add_filter "/spec/"
 end
 
-require "relaton_3gpp"
+require "relaton/3gpp"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

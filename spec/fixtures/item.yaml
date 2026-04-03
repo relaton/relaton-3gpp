@@ -1,14 +1,15 @@
 ---
-id: TR-00.01U-UMTS-3.0.0
-type: standard
 schema_version: v1.5.6
+id: TR00.01U-UMTS-3.0.0
 title:
 - content: Work programme for the standardization of Universal Mobile Telecommunications
     System (UMTS)
+  format: text/plain
   type: main
 source:
-- type: src
-  content: https://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip
+- content: https://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip
+  type: src
+type: standard
 docidentifier:
 - content: 3GPP TR 00.01U:UMTS/3.0.0
   type: 3GPP
@@ -18,10 +19,11 @@ date:
 - type: published
   at: '1994-11-18'
 contributor:
-- role:
-  - type: author
-  - type: publisher
-  organization:
+- organization:
+    name:
+    - content: 3rd Generation Partnership Project
+    abbreviation:
+      content: 3GPP
     address:
     - street:
       - c/o ETSI 650, route des Lucioles
@@ -29,26 +31,27 @@ contributor:
       city: Sophia Antipolis Cedex
       country: France
       postcode: '06921'
-    name:
-    - content: 3rd Generation Partnership Project
-    abbreviation:
-      content: 3GPP
-- role:
+  role:
   - type: author
-  person:
+  - type: publisher
+- person:
     name:
       forename:
-      - language: en
-        script: Latn
+      - initial: J
         content: Juha
-      surname:
         language: en
         script: Latn
+        locale: en-US
+      surname:
         content: Rapeli
+        language: en
+        script: Latn
     affiliation:
     - organization:
         name:
         - content: PHILIPS CONSUMER COMMUNICATION
+  role:
+  - type: author
 version:
 - draft: 3.0.0
 language:
@@ -56,13 +59,26 @@ language:
 script:
 - Latn
 place:
-- formatted_place: Sophia Antipolis Cedex, France
+- city: Sophia Antipolis Cedex, France
 ext:
   schema_version: v1.0.4
   doctype:
+    abbreviation: TR
     content: TR
-  flavor: 3gpp
+  subdoctype: spec
+  ics:
+    - code: "33.020"
+      text: Telecommunications and information exchange between systems
+  radiotechnology: 5G
+  common_ims_spec: false
+  internal: true
   release:
+    version2g: 3.0.0
+    version3g: 3.0.0
+    defunct: false
+    wpm_code_2g: 00.01U
+    wpm_code_3g: 00.01U
+    freeze_meeting: SMG-#28
     freeze_stage1_meeting: SMG-#28
     freeze_stage2_meeting: SMG-#28
     freeze_stage3_meeting: SMG-#28

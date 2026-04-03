@@ -14,3 +14,4 @@ Gemfile.lock
 .vscode/
 .rspec_status
 status_smg_3GPP*
+.claude/settings.local.json

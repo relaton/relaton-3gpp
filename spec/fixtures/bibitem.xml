@@ -1,6 +1,5 @@
-<bibdata type="standard" schema-version="v1.5.6">
-  <fetched>2025-07-16</fetched>
-  <title type="main">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
+<bibitem id="TR00.01U-UMTS-3.0.0" type="standard" schema-version="v1.5.6">
+  <title type="main" format="text/plain">Work programme for the standardization of Universal Mobile Telecommunications System (UMTS)</title>
   <uri type="src">https://www.3gpp.org/ftp/Specs/archive/00_series/00.01U/0001U-300.zip</uri>
   <docidentifier type="3GPP" primary="true">3GPP TR 00.01U:UMTS/3.0.0</docidentifier>
   <docnumber>TR 00.01U:UMTS/3.0.0</docnumber>
@@ -26,7 +25,7 @@
     <role type="author"/>
     <person>
       <name>
-        <forename language="en" script="Latn">Juha</forename>
+        <forename language="en" locale="en-US" script="Latn" initial="J">Juha</forename>
         <surname language="en" script="Latn">Rapeli</surname>
       </name>
       <affiliation>
@@ -42,18 +41,6 @@
   <language>en</language>
   <script>Latn</script>
   <place>
-    <formattedPlace>Sophia Antipolis Cedex, France</formattedPlace>
+    <city>Sophia Antipolis Cedex, France</city>
   </place>
-  <ext schema-version="v1.0.4">
-    <doctype>TR</doctype>
-    <flavor>3gpp</flavor>
-    <release>
-      <freeze-stage1-meeting>SMG-#28</freeze-stage1-meeting>
-      <freeze-stage2-meeting>SMG-#28</freeze-stage2-meeting>
-      <freeze-stage3-meeting>SMG-#28</freeze-stage3-meeting>
-      <close-meeting>SA#28</close-meeting>
-      <project-start>1994-08-18</project-start>
-      <project-end>1999-02-12</project-end>
-    </release>
-  </ext>
-</bibdata>
+</bibitem>
