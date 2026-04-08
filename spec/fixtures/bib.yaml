@@ -56,7 +56,10 @@ language:
 script:
 - Latn
 place:
-- formatted_place: Sophia Antipolis Cedex, France
+- city: Sophia Antipolis Cedex
+  country:
+  - iso: FR
+    content: France
 ext:
   schema_version: v1.0.4
   doctype:

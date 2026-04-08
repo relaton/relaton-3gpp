@@ -288,7 +288,8 @@ module Relaton
       end
 
       def parse_place
-        [Bib::Place.new(formatted_place: "Sophia Antipolis Cedex, France")]
+        country = Bib::Place::RegionType.new(content: "France", iso: "FR")
+        [Bib::Place.new(city: "Sophia Antipolis Cedex", country: [country])]
       end
 
       def parse_ext
