@@ -48,8 +48,13 @@ module Relaton3gpp
         # internal: @spec[:"For publication"] == "0",
         release: parse_release,
         contributor: parse_contributor,
-        place: ["Sophia Antipolis Cedex, France"],
+        place: parse_place,
       )
+    end
+
+    def parse_place
+      country = RelatonBib::Place::RegionType.new name: "France", iso: "FR"
+      [RelatonBib::Place.new(city: "Sophia Antipolis Cedex", country: [country])]
     end
 
     #
