@@ -9,4 +9,9 @@ VCR.configure do |config|
     preserve_exact_body_bytes: true,
   }
   config.hook_into :webmock
+
+  # Index downloads are handled by pre-loaded fixtures in webmock.rb
+  config.ignore_request do |request|
+    URI(request.uri).path.end_with?("index-v1.zip")
+  end
 end
