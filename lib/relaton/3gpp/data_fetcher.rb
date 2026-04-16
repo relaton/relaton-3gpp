@@ -180,7 +180,7 @@ module Relaton
       #
       def add_transposed_relation(bib1, bib2)
         bib2.relation.each { |r| bib1.relation << r }
-        bib2.instance_variable_set :@relation, []
+        bib2.relation.clear
         desc = Bib::LocalizedMarkedUpString.new content: "equivalent"
         rel = Bib::Relation.new(type: "adoptedAs", bibitem: bib2, description: desc)
         bib1.relation << rel
