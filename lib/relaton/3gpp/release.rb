@@ -15,6 +15,7 @@ module Relaton
       attribute :project_end, :date
 
       xml do
+        root "release"
         map_element "version2G", to: :version2g
         map_element "version3G", to: :version3g
         map_element "defunct", to: :defunct
