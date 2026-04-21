@@ -22,6 +22,13 @@ module Relaton
         map_element "internal", to: :internal
         map_element "release", to: :release
       end
+
+      key_value do
+        map_element "radiotechnology", to: :radiotechnology
+        map_element "common_ims_spec", to: :common_ims_spec
+        map_element "internal", to: :internal
+        map_element "release", to: :release
+      end
     end
   end
 end
