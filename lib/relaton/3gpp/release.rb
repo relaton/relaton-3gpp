@@ -28,6 +28,21 @@ module Relaton
         map_element "project-start", to: :project_start
         map_element "project-end", to: :project_end
       end
+
+      key_value do
+        map_element "version2g", to: :version2g
+        map_element "version3g", to: :version3g
+        map_element "defunct", to: :defunct
+        map_element "wpm_code_2g", to: :wpm_code_2g
+        map_element "wpm_code_3g", to: :wpm_code_3g
+        map_element "freeze_meeting", to: :freeze_meeting
+        map_element "freeze_stage1_meeting", to: :freeze_stage1_meeting
+        map_element "freeze_stage2_meeting", to: :freeze_stage2_meeting
+        map_element "freeze_stage3_meeting", to: :freeze_stage3_meeting
+        map_element "close_meeting", to: :close_meeting
+        map_element "project_start", to: :project_start
+        map_element "project_end", to: :project_end
+      end
     end
   end
 end
